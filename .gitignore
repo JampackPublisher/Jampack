@@ -14,6 +14,9 @@ public_html/wp-content/themes/*
 # Ignore uploads (optional)
 public_html/wp-content/uploads/
 
+# Ignore backups
+public_html/wp-content/ai1wm-backups/
+
 # Ignore sensitive files
 public_html/wp-config.php
 public_html/wp-config-sample.php
