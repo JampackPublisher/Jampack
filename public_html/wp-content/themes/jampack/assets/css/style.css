@@ -1,0 +1,56 @@
+.page-id-81 #brx-header .brxe-container,
+.page-id-1285 #brx-header .brxe-container,
+.page-id-1248 #brx-header .brxe-container,
+.page-id-81 #brx-footer .brxe-container,
+.page-id-1285 #brx-footer .brxe-container,
+.page-id-1248 #brx-footer .brxe-container {
+    width: 100%;
+    padding: 0 30px;
+}
+
+.container-narrow {
+    width: 1440px !important;
+    max-width: 100% !important;
+}
+
+.splide__track--nav > .splide__list > .splide__slide {
+    border: none !important;
+}
+
+.game-screenshot {
+    margin: 0
+}
+
+.game-screenshot img {
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.game-features ul {
+    margin-top: 0;
+}
+
+.site-header .site-branding__logo {
+    height: auto !important;
+}
+
+@media (max-width: 768px) {
+    .page-id-81 #brx-header .brxe-section,
+    .page-id-1285 #brx-header .brxe-section,
+    .page-id-1248 #brx-header .brxe-section,
+    .page-id-81 #brx-footer .brxe-section,
+    .page-id-1285 #brx-footer .brxe-section,
+    .page-id-1248 #brx-footer .brxe-section {
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .page-id-81 #brx-header .brxe-container,
+    .page-id-1285 #brx-header .brxe-container,
+    .page-id-1248 #brx-header .brxe-container,
+    .page-id-81 #brx-footer .brxe-container,
+    .page-id-1285 #brx-footer .brxe-container,
+    .page-id-1248 #brx-footer .brxe-container {
+        padding: 0;
+    }
+}
