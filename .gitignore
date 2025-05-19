@@ -4,6 +4,9 @@ public_html/wp-includes/
 public_html/license.txt
 public_html/readme.html
 
+# Ignore debug logs
+public_html/wp-content/debug.log
+
 # Ignore all plugins and themes except your custom ones
 public_html/wp-content/plugins/*
 !public_html/wp-content/plugins/your-custom-plugin/
