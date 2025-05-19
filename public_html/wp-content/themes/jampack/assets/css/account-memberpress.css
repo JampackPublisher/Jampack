@@ -1,0 +1,91 @@
+/* Account page styles for MemberPress
+This file is used to override the default styles of MemberPress account page  */
+
+/* Override */
+.app-layout .site-header,
+.guest-layout .site-header {
+    background: linear-gradient(135deg,
+            #ff6a4b 0%,
+            #992f1b 25%,
+            #571c10 50%,
+            #2e0f08 75%,
+            #000000 100%) !important;
+}
+
+/* Override */
+.app-layout .profile-menu__text,
+.guest-layout .profile-menu__text,
+.app-layout .profile-menu__arrow_down,
+.guest-layout .profile-menu__arrow_down {
+    color: #ffffff;
+}
+
+/* Override */
+.app-layout .profile-menu__text--small,
+.guest-layout .profile-menu__text--small {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.account-header-invaders {
+    position: relative;
+}
+
+.invaders-strip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70%;
+    /* height: 40px; */
+    pointer-events: none;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    z-index: 1;
+}
+
+.invader {
+    font-size: 1.5rem;
+    position: relative;
+    bottom: 0;
+    opacity: 0;
+
+    animation-name: invader-rise;
+    animation-duration: 10s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+}
+
+.invader:nth-child(1) {
+    animation-delay: 2s;
+}
+
+.invader:nth-child(2) {
+    animation-delay: 4s;
+}
+
+.invader:nth-child(3) {
+    animation-delay: 6s;
+}
+
+.invader:nth-child(4) {
+    animation-delay: 8s;
+}
+
+@keyframes invader-rise {
+    0% {
+        bottom: 0;
+        opacity: 1;
+    }
+
+    15% {
+        bottom: 40px;
+        opacity: 0;
+    }
+
+    100% {
+        bottom: 40px;
+        opacity: 0;
+    }
+}
