@@ -1,15 +1,26 @@
 /* Account page styles for MemberPress
 This file is used to override the default styles of MemberPress account page  */
 
+/*********
+* HEADER *
+**********/
+
 /* Override */
 .app-layout .site-header,
 .guest-layout .site-header {
     background: linear-gradient(135deg,
-            #ff6a4b 0%,
-            #992f1b 25%,
-            #571c10 50%,
-            #2e0f08 75%,
-            #000000 100%) !important;
+                #ff6a4b 25%,
+                #da5a40 50%,
+                #62291e 70%,
+                #000000 80%) !important;
+}
+
+/* Override */
+@media (max-width: 768px) {
+    .app-layout .site-header,
+    .guest-layout .site-header {
+        background: #ff6a4b !important;
+    }
 }
 
 /* Override */
@@ -88,4 +99,58 @@ This file is used to override the default styles of MemberPress account page  */
         bottom: 40px;
         opacity: 0;
     }
+}
+
+/******
+* NAV *
+*******/
+
+/* Override */
+#mepr-account-nav {
+    background: linear-gradient(to bottom,
+            #ff6a4b 25%,
+            #da5a40 50%,
+            #62291e 70%,
+            #000000 80%) !important;
+}
+
+@media (max-width: 840px) {
+    #mepr-account-nav {
+        background: #ff6a4b !important;
+    }
+}
+
+.svg-container {
+  width: 100%;
+  height: 50px;
+  position: relative;
+  overflow: hidden;
+  /* background: #000000; */
+  margin: 0%;
+  padding-top: 5em;
+}
+
+.spaceship {
+  width: 2em;
+  height: 2em;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect x='13.666' y='8' width='4.773' height='4' style='fill: rgb(54, 191, 20);'></rect><rect x='8' y='12' width='16' height='4' style='fill: rgb(54, 191, 20);'></rect><rect x='6' y='16' width='20' height='4' style='fill: rgb(54, 191, 20);'></rect><rect x='0' y='20' width='32' height='4' style='fill: rgb(54, 191, 20);'></rect><rect x='0' y='24' width='4' height='4' style='fill: rgb(54, 191, 20);'></rect><rect x='28' y='24' width='4' height='4' style='fill: rgb(54, 191, 20);'></rect><rect x='29.398' y='28.017' width='1.276' height='2.654' style='stroke-width: 1px; fill: rgb(255, 233, 0);'></rect><rect x='1.399' y='28.015' width='1.276' height='2.654' style='stroke-width: 1px; fill: rgb(255, 233, 0);'></rect><rect x='13.033' y='13.959' width='5.938' height='3.647' style='fill: rgb(20, 100, 191);'></rect><rect x='15.298' y='5.329' width='1.276' height='2.654' style='stroke-width: 1px; fill: rgb(255, 0, 0);'></rect></svg>");
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  animation: fly-across 30s linear infinite;
+}
+
+@keyframes fly-across {
+  0% {
+    left: 85%;
+  }
+  50% {
+    left: 0%; 
+  }
+  100% {
+    left: 85%;
+  }
 }
