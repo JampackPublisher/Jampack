@@ -1,5 +1,7 @@
 <?php
 
+require_once get_stylesheet_directory() . '/memberpress/init.php';
+
 function register_jampack_bricks_elements() {
 	$element_files = [
 		__DIR__ . '/includes/elements/Jampack_Game_Screenshots.php',
@@ -237,30 +239,3 @@ function filter_menu_by_membership( $items ) {
 
 add_filter( 'wp_get_nav_menu_items', 'filter_menu_by_membership', 10, 1 );
 
-function jampack_account_memberpress_styles(){
-	$current_post = get_post();
-	if (is_user_logged_in() && class_exists('MeprUser') && MeprUser::is_account_page($current_post)) {
-		$handle = 'account-memberpress-styles';
-		$relative_path = '/assets/css/account-memberpress.css';
-		$file_path = get_stylesheet_directory() . $relative_path;
-		$file_url = get_stylesheet_directory_uri() . $relative_path;
-		if (file_exists($file_path)) {
-			wp_enqueue_style(
-				$handle,
-				$file_url,
-				array(),
-				filemtime($file_path)
-			);
-		} else {
-			error_log("(account_memberpress_styles) File NOT found: $file_path");
-		}
-	}
-}
-
-
-// This is a workaround to load the styles in the footer.¡
-// We need to load styles in the footer because memberpress add or modify the styles dinamically
-// Check theme_style() from MeprReadyLaunchCtrl.php 
-
-// add_action('wp_enqueue_scripts', 'jampack_account_memberpress_styles'); 
-add_action('wp_footer', 'jampack_account_memberpress_styles');

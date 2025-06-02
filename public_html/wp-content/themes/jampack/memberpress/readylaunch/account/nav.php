@@ -15,6 +15,11 @@ $logout_url   = MeprUtils::logout_url();
         href="<?php echo MeprHooks::apply_filters('mepr-account-nav-payments-link', $account_url . $delim . 'action=payments'); ?>"><?php echo MeprHooks::apply_filters('mepr-account-nav-payments-label', _x('Payments', 'ui', 'memberpress')); ?></a>
     </span>
 
+    <span class="mepr-nav-item <?php MeprAccountHelper::active_nav('statistics'); ?>">
+      <a class=""
+        href="<?php echo MeprHooks::apply_filters('mepr-account-nav-statistics-link', $account_url . $delim . 'action=statistics'); ?>"><?php echo MeprHooks::apply_filters('mepr-account-nav-statistics-label', _x('Statistics', 'ui', 'memberpress')); ?></a>
+    </span>
+  
     <span class="mepr-nav-item <?php MeprAccountHelper::active_nav('subscriptions'); ?>">
       <a class=""
         href="<?php echo MeprHooks::apply_filters('mepr-account-nav-subscriptions-link', $account_url . $delim . 'action=subscriptions'); ?>"><?php echo MeprHooks::apply_filters('mepr-account-nav-subscriptions-label', _x('Subscriptions', 'ui', 'memberpress')); ?></a>
