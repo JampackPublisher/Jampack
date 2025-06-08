@@ -49,3 +49,12 @@ add_action('mepr_account_nav_content', function ($action, $atts) {
     }
 }, 10, 2);
 
+/**
+ * Register REST API routes for the Jampack account.
+ * This function registers the routes for the Jampack account controller.
+ */
+add_action('rest_api_init', function () {
+    $jampack_account = MeprCtrlFactory::fetch('JampackAccount');
+	$jampack_account->register_routes();
+});
+
