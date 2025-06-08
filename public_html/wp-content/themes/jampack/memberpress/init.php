@@ -58,3 +58,13 @@ add_action('rest_api_init', function () {
 	$jampack_account->register_routes();
 });
 
+/**
+ * Enqueue scripts for the MemberPress account analytics page.
+ * This function enqueues the analytics script and localizes it with the REST API URL and nonce.
+ */
+wp_enqueue_script('jampack-analytics-script', get_stylesheet_directory_uri() . '/assets/js/jpck-analytics.js', ['jquery'], null, true);
+wp_localize_script('jampack-analytics-script', 'AnalyticsData', [
+    'restUrl' => esc_url_raw(rest_url(MeprCtrlFactory::fetch('JampackAccount')->analitycs_rest_route())),
+    'nonce'   => wp_create_nonce('wp_rest')
+]);
+
