@@ -2,6 +2,7 @@
 $mepr_current_user = MeprUtils::get_currentuserinfo();
 $delim = MeprAppCtrl::get_param_delimiter_char($account_url);
 $logout_url   = MeprUtils::logout_url();
+$is_current_user_developer = MeprCtrlFactory::fetch('JampackAccount')->is_current_user_developer();
 ?>
 <div class='mepr-account-container'>
   <nav id="mepr-account-nav" x-data="{ open: false }" class="mepr-nav" :class="open ? 'open' : ''" @toggle-menu.window="open=!open">
@@ -15,10 +16,12 @@ $logout_url   = MeprUtils::logout_url();
         href="<?php echo MeprHooks::apply_filters('mepr-account-nav-payments-link', $account_url . $delim . 'action=payments'); ?>"><?php echo MeprHooks::apply_filters('mepr-account-nav-payments-label', _x('Payments', 'ui', 'memberpress')); ?></a>
     </span>
 
-    <span class="mepr-nav-item <?php MeprAccountHelper::active_nav('statistics'); ?>">
-      <a class=""
-        href="<?php echo MeprHooks::apply_filters('mepr-account-nav-statistics-link', $account_url . $delim . 'action=statistics'); ?>"><?php echo MeprHooks::apply_filters('mepr-account-nav-statistics-label', _x('Statistics', 'ui', 'memberpress')); ?></a>
-    </span>
+    <?php if ($is_current_user_developer || is_super_admin()): ?>
+      <span class="mepr-nav-item <?php MeprAccountHelper::active_nav('statistics'); ?>">
+        <a class=""
+          href="<?php echo MeprHooks::apply_filters('mepr-account-nav-statistics-link', $account_url . $delim . 'action=statistics'); ?>"><?php echo MeprHooks::apply_filters('mepr-account-nav-statistics-label', _x('Statistics', 'ui', 'memberpress')); ?></a>
+      </span>
+    <?php endif; ?>
   
     <span class="mepr-nav-item <?php MeprAccountHelper::active_nav('subscriptions'); ?>">
       <a class=""

@@ -10,8 +10,13 @@ class MeprJampackAccountCtrl extends MeprBaseCtrl
         parent::__construct();
     }
 
+    public function developer_role_to_string() {
+        return 'developer';
+    }
+
     public function statistics() {
         $mepr_options = MeprOptions::fetch();
+        $is_current_user_developer = $this->is_current_user_developer();
         return MeprView::render('/account/statistics', get_defined_vars(), [JMP_MEPR_READY_LAUNCH_PATH]);
     }
 
@@ -51,11 +56,19 @@ class MeprJampackAccountCtrl extends MeprBaseCtrl
         $offset = ($page - 1) * $per_page;
 
         $query = $wpdb->prepare("
-        SELECT * FROM {$wpdb->prefix}rmp_analytics
-        WHERE user = %d
-        ORDER BY $orderby $order
+        SELECT a.*
+        FROM {$wpdb->prefix}rmp_analytics a
+        INNER JOIN (
+            SELECT post, MAX(time) AS max_time
+            FROM {$wpdb->prefix}rmp_analytics
+            WHERE user = %d
+            GROUP BY post
+        ) latest
+        ON a.post = latest.post AND a.time = latest.max_time
+        WHERE a.user = %d
+        ORDER BY a.$orderby $order
         LIMIT %d OFFSET %d
-    ", $current_user_id, $per_page, $offset);
+    ", $current_user_id, $current_user_id, $per_page, $offset);
 
         $results = $wpdb->get_results($query, ARRAY_A);
 
@@ -76,7 +89,14 @@ class MeprJampackAccountCtrl extends MeprBaseCtrl
         }
 
         // Total count for pagination
-        $total_query = $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}rmp_analytics WHERE user = %d", $current_user_id);
+        $total_query = $wpdb->prepare("
+            SELECT COUNT(*) FROM (
+                SELECT post
+                FROM {$wpdb->prefix}rmp_analytics
+                WHERE user = %d
+                GROUP BY post
+            ) AS latest
+        ", $current_user_id);
         $total = $wpdb->get_var($total_query);
 
         return rest_ensure_response([
@@ -101,6 +121,18 @@ class MeprJampackAccountCtrl extends MeprBaseCtrl
 
     public function register_routes() {
         $this->register_analytics_route();
+    }
+
+    public function is_developer_user($user) {
+        return in_array($this->developer_role_to_string(), (array) $user->roles);
+    }
+
+    public function is_current_user_developer() {
+        $current_user = wp_get_current_user();
+        if (!$current_user || !$current_user->exists()) {
+            return false;
+        }
+        return $this->is_developer_user($current_user);
     }
 
     public function load_hooks() {
