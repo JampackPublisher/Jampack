@@ -40,7 +40,8 @@ class MeprJampackAccountCtrl extends MeprBaseCtrl
             return new WP_REST_Response(['message' => 'Unauthorized'], 401);
         }
 
-        $current_user_id = 1;
+        // For development only
+        // $current_user_id = 1;
 
         $per_page = absint($request->get_param('per_page') ?? 20);
         $page     = absint($request->get_param('page') ?? 1);
