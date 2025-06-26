@@ -3,6 +3,7 @@ public_html/wp-admin/
 public_html/wp-includes/
 public_html/license.txt
 public_html/readme.html
+public_html/wp-salt.php
 
 # Ignore debug logs
 public_html/wp-content/debug.log
