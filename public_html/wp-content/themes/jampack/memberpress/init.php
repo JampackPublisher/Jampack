@@ -12,8 +12,8 @@ spl_autoload_register('autoload_jampack_memberpress_controllers');
  * If so, it enqueues the styles from the specified path.
  */
 function jampack_account_memberpress_styles(){
-	$current_post = get_post();
-	if (is_user_logged_in() && class_exists('MeprUser') && MeprUser::is_account_page($current_post)) {
+	//$current_post = get_post();
+	if (is_page('account')) {
 		$handle = 'account-memberpress-styles';
 		$relative_path = '/assets/css/account-memberpress.css';
 		$file_path = get_stylesheet_directory() . $relative_path;
