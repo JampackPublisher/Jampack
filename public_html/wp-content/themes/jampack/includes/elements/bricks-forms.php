@@ -1,6 +1,5 @@
 <?php
 function handle_forms($form) {
-
   $settings = $form->get_settings();
   $cssId = $settings['_cssId'] ?? '';
 
