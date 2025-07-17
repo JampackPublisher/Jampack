@@ -39,3 +39,6 @@ Thumbs.db
 node_modules/
 dist/
 build/
+
+# Avoid ignoring the database creation script
+!/jampack_database/createDB.sql
