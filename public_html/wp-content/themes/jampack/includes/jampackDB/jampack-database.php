@@ -14,7 +14,7 @@ function init_jampack_db_connection() {
     global $jampack_db;
 
     if (!isset($jampack_db)) {
-        $jampack_db = new wpdb(JPCK_DB_NAME, JPCK_DB_PASSWORD, JPCK_DB_NAME, JPCK_DB_HOST);
+        $jampack_db = new wpdb(JPCK_DB_USER, JPCK_DB_PASSWORD, JPCK_DB_NAME, JPCK_DB_HOST);
     }
 }
 
