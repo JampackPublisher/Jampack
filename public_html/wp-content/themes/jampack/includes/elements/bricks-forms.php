@@ -22,11 +22,7 @@ function handle_forms($form)
     default:
       $error_message = 'Unhandled Bricks form action';
       error_log("$error_message (form CSS ID: $cssId)");
-      $form->set_result([
-        'action' => 'handle_bricks_forms_action',
-        'type'    => 'error', // 'success' or 'error' or 'info'
-        'message' => esc_html__($error_message, 'bricks'),
-      ]);
+      set_result($form, 'handle_bricks_forms_action', 'error', $error_message);
       break;
   }
 }
@@ -46,29 +42,26 @@ function handle_game_submission_form($form)
   $uploaded_files = $form->get_uploaded_files();
 
   $form_fields = [];
-  $game_build = $uploaded_files['gamebuild'] ?? '';
-  $form_fields['game_build'] = $game_build[0]['file'] ?? '';
+  $game_build = $uploaded_files['gamebuild'][0] ?? '';
+  $form_fields['game_build'] = $game_build['file'] ?? '';
   $game_description = $fields['description'] ?? '';
   $form_fields['game_description'] = $game_description;
-  $preview_video = $uploaded_files['previewvideo'] ?? '';
-  $form_fields['preview_video'] = $preview_video[0]['file'] ?? '';
+  $preview_video = $uploaded_files['previewvideo'][0] ?? '';
+  $form_fields['preview_video'] = $preview_video['file'] ?? '';
   $credits = $fields['credits'] ?? '';
   $form_fields['credits'] = $credits;
   $controls = $fields['controls'] ?? '';
   $form_fields['controls'] = $controls;
-  $game_logo = $uploaded_files['gamelogo'] ?? '';
-  $form_fields['game_logo'] = $game_logo[0]['file'] ?? '';
-  $game_icon = $uploaded_files['gameicon'] ?? '';
-  $form_fields['game_icon'] = $game_icon[0]['file'] ?? '';
+  $game_logo = $uploaded_files['gamelogo'][0] ?? '';
+  $form_fields['game_logo'] = $game_logo['file'] ?? '';
+  $game_icon = $uploaded_files['gameicon'][0] ?? '';
+  $form_fields['game_icon'] = $game_icon['file'] ?? '';
   $form_fields['user_id'] = get_current_user_id();
 
   if($form_fields['user_id'] <= 0) {
-    $error_message = esc_html__('You must be logged in to submit a game.', 'bricks');
-    $form->set_result([
-      'action' => 'GameSubmissionFormAction',
-      'type'    => 'error',
-      'message' => $error_message,
-    ]);
+    $error_message = 'You must be logged in to submit a game.';
+    set_result($form, 'GameSubmissionFormAction', 'error', $error_message);
+    error_log($error_message);
     return;
   }
  
@@ -81,44 +74,45 @@ function handle_game_submission_form($form)
 
   if (!empty($empty_fields)) {
     $error_message = sprintf(
-      esc_html__('The following fields are empty but they are required: %s', 'bricks'),
+      'The following fields are empty but they are required: %s',
       implode(', ', $empty_fields)
     );
-    $form->set_result([
-      'action' => 'GameSubmissionFormAction',
-      'type'    => 'error',
-      'message' => esc_html__($error_message, 'bricks'),
-    ]);
+    set_result($form, 'GameSubmissionFormAction', 'error', $error_message);
+    error_log($error_message);
     return;
   }
 
-  global $jampack_db;
-  if (!isset($jampack_db)) {
-    $error_message = esc_html__('Database connection is not initialized.', 'bricks');
-    $form->set_result([
-      'action' => 'GameSubmissionFormAction',
-      'type'    => 'error',
-      'message' => $error_message,
-    ]);
-    return;
-  }
-
+  $game_build['tmp_name'] = $game_build['file'];
   $game_build_upload = wp_handle_sideload( $game_build, ['test_form' => false]);
+  $preview_video['tmp_name'] = $preview_video['file'];
   $preview_video_upload = wp_handle_sideload( $preview_video, ['test_form' => false]);
+  $game_logo['tmp_name'] = $game_logo['file'];
   $game_logo_upload = wp_handle_sideload( $game_logo, ['test_form' => false]);
+  $game_icon['tmp_name'] = $game_icon['file'];
   $game_icon_upload = wp_handle_sideload( $game_icon, ['test_form' => false]);
 
   if(!empty($game_build_upload['error']) || !empty($preview_video_upload['error']) || 
      !empty($game_logo_upload['error']) || !empty($game_icon_upload['error'])) {
-    $error_message = esc_html__("File upload error // Game Build: " . $game_build_upload['error'] . 
-    " - Preview Video: " . $preview_video_upload['error'] . 
-    " - Game Logo: " . $game_logo_upload['error'] . 
-    " - Game icon: " . $game_icon_upload['error'], 'bricks');
-    $form->set_result([
-      'action' => 'GameSubmissionFormAction',
-      'type'    => 'error',
-      'message' => $error_message,
-    ]);
+    $error_message = "File upload error // " . 
+    (!empty($game_build_upload['error']) ? (" - Game Build: " . $game_build_upload['error']) : (''))  . 
+    (!empty($preview_video_upload['error']) ? (" - Preview Video: " . $preview_video_upload['error']) : (''))  . 
+    (!empty($game_logo_upload['error']) ? (" - Game Logo: " . $game_logo_upload['error']) : ('')) . 
+    (!empty($game_icon_upload['error']) ? (" - Game icon: " . $game_icon_upload['error']) : (''));
+    set_result($form, 'GameSubmissionFormAction', 'error', $error_message);
+    error_log($error_message);
+    return;
+  }
+
+  // Use the actual file paths from the uploads
+  $form_fields['game_build'] = $game_build_upload['file'];
+  $form_fields['preview_video'] = $preview_video_upload['file'];
+  $form_fields['game_logo'] = $game_logo_upload['file'];
+  $form_fields['game_icon'] = $game_icon_upload['file'];
+
+  global $jampack_db;
+  if (!isset($jampack_db)) {
+    $error_message = 'Database connection is not initialized.';
+    set_result($form, 'GameSubmissionFormAction', 'error', $error_message);
     return;
   }
 
@@ -139,19 +133,19 @@ function handle_game_submission_form($form)
             );
 
   if ($result === false) {
-    $error_message = esc_html__('Failed to insert data into the database.', 'bricks');
-    $form->set_result([
-      'action' => 'GameSubmissionFormAction',
-      'type'    => 'error',
-      'message' => $error_message,
-    ]);
+    $error_message = 'Failed to insert data into the database.';
+    set_result($form, 'GameSubmissionFormAction', 'error', $error_message);
     error_log('Database insert error: ' . $jampack_db->last_error);
     return;
   }
 
+  set_result($form, 'GameSubmissionFormAction', 'success', 'Data submitted successfully');
+}
+
+function set_result($form, $action, $type, $message) {
   $form->set_result([
-    'action' => 'GameSubmissionFormAction',
-    'type'    => 'success',
-    'message' => esc_html__('Data submitted successfully', 'bricks'),
+    'action' => $action,
+    'type'   => $type,
+    'message' => esc_html__($message, 'bricks'),
   ]);
 }
