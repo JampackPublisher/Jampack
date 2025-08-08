@@ -1,4 +1,23 @@
 <?php
+
+/**
+ * Jampack MemberPress Integration
+ *
+ * This file is part of the Jampack for WordPress, which integrates with MemberPress.
+ * It sets up paths and autoloads controllers for MemberPress functionality within Jampack.
+ *
+ * @package Jampack
+ * @subpackage MemberPress
+ * @since 1.0.0
+ */
+
+include_once ABSPATH . 'wp-admin/includes/plugin.php';
+
+if(!is_plugin_active('memberpress/memberpress.php') || !class_exists('MeprCtrlFactory')){
+	error_log('MemberPress is not active or MeprCtrlFactory class does not exist.' . __FILE__);
+	return;
+}
+
 require_once get_stylesheet_directory() . '/memberpress/jampack-memberpress.php';
 
 /**
