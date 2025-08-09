@@ -14,6 +14,10 @@ class MeprJampackAccountCtrl extends MeprBaseCtrl
         return 'developer';
     }
 
+    public function judge_role_to_string() {
+        return 'judge';
+    }
+
     public function statistics() {
         $mepr_options = MeprOptions::fetch();
         $is_current_user_developer = $this->is_current_user_developer();

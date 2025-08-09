@@ -96,3 +96,20 @@ function analytics_enqueue_scripts(){
 
 // Hook to enqueue the analytics scripts
 add_action('wp_enqueue_scripts', 'analytics_enqueue_scripts');
+
+/**
+ * Custom redirect handler to replace MemberPress's default behavior.
+ * It allows access to the admin panel depending on the role.
+ */
+add_action('init', function() {
+    // Remove MemberPress behavior that redirects users from admin
+    remove_action('admin_init', 'MeprUsersCtrl::maybe_redirect_member_from_admin');
+
+	$jampack_account = MeprCtrlFactory::fetch('JampackAccount');
+	// IMPORTANT: Add the roles you want to allow access to the admin panel
+	$roles = [$jampack_account->judge_role_to_string()]; 
+
+    add_action('admin_init', function() use ($roles) {
+        maybe_redirect_member_from_admin_jampack($roles);
+    });
+});
