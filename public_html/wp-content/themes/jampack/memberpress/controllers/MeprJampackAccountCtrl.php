@@ -18,6 +18,18 @@ class MeprJampackAccountCtrl extends MeprBaseCtrl
         return 'judge';
     }
 
+    public function children_hospital_role_to_string() {
+        return 'children_h';
+    }
+
+    public function children_role_to_string() {
+        return 'children';
+    }
+
+    public function children_roles_to_string() {
+        return [$this->children_role_to_string(), $this->children_hospital_role_to_string()];
+    }
+
     public function statistics() {
         $mepr_options = MeprOptions::fetch();
         $is_current_user_developer = $this->is_current_user_developer();

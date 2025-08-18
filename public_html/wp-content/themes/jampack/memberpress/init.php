@@ -106,7 +106,7 @@ add_action('init', function() {
     remove_action('admin_init', 'MeprUsersCtrl::maybe_redirect_member_from_admin');
 
 	$jampack_account = MeprCtrlFactory::fetch('JampackAccount');
-	// IMPORTANT: Add the roles you want to allow access to the admin panel
+	// IMPORTANT: Add the roles you want to allow access to the admin panel // TODO: Store in a config option
 	$roles = [$jampack_account->judge_role_to_string()]; 
 
     add_action('admin_init', function() use ($roles) {

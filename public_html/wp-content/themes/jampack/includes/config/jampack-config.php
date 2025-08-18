@@ -8,3 +8,6 @@ define('JPCK_DB_USER', 'jampack_user');
 define('JPCK_DB_PASSWORD', 'jampack_pass');
 /** MySQL hostname */
 define('JPCK_DB_HOST', 'db:3306');
+
+/** Games */
+define('JPCK_CHILDREN_RESTRICTED_GENRES', ['fighting', 'horror', 'first-person-shooter-fps', 'survival', 'shooter', 'bullet-hell']);
