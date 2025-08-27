@@ -1,15 +1,12 @@
 <?php
 
-require_once __DIR__ . '/memberpress/init.php';
-require_once __DIR__ . '/includes/elements/bricks-forms.php';
-require_once __DIR__ . '/includes/jampackDB/jampack-database.php';
-require_once __DIR__ . '/includes/config/jampack-config.php';
-require_once __DIR__ . '/includes/elements/games.php';
+require_once get_stylesheet_directory() . '/memberpress/init.php';
 
 function register_jampack_bricks_elements() {
 	$element_files = [
 		__DIR__ . '/includes/elements/Jampack_Game_Screenshots.php',
 		__DIR__ . '/includes/elements/Jampack_Game_Favorite_Button.php',
+		__DIR__ . '/includes/elements/Jampack_Game_Fullscreen_Button.php',
 		__DIR__ . '/includes/elements/Jampack_Tooltip.php',
 		__DIR__ . '/includes/elements/Jampack_Slider_Nested.php',
 	];
@@ -20,8 +17,6 @@ function register_jampack_bricks_elements() {
 }
 
 add_action( 'init', 'register_jampack_bricks_elements', 11 );
-
-// TODO: Pass all the stuff related to games to /includes/elements/games.php file
 
 function prefix_disable_gutenberg( $current_status, $post_type ) {
 	// Use your post type key instead of 'product'
