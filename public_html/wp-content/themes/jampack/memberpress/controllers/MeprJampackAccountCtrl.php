@@ -22,12 +22,12 @@ class MeprJampackAccountCtrl extends MeprBaseCtrl
         return 'children_h';
     }
 
-    public function children_role_to_string() {
-        return 'children';
+    public function regular_children_role_to_string() {
+        return 'children_r';
     }
 
     public function children_roles_to_string() {
-        return [$this->children_role_to_string(), $this->children_hospital_role_to_string()];
+        return [$this->regular_children_role_to_string(), $this->children_hospital_role_to_string()];
     }
 
     public function statistics() {
@@ -150,6 +150,18 @@ class MeprJampackAccountCtrl extends MeprBaseCtrl
             return false;
         }
         return $this->is_developer_user($current_user);
+    }
+
+    public function is_children_user($user) {
+        return !empty(array_intersect($this->children_roles_to_string(), (array) $user->roles));
+    }
+
+    public function is_children_hospital_user($user) {
+        return in_array($this->children_hospital_role_to_string(), (array) $user->roles);
+    }
+
+    public function is_regular_children_user($user) {
+        return in_array($this->regular_children_role_to_string(), (array) $user->roles);
     }
 
     public function load_hooks() {

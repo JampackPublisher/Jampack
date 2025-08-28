@@ -106,11 +106,20 @@ function current_query_index() {
 	return $index + 1;
 }
 
+// TODO: Move this function to a more appropriate file
 function get_current_user_subscription_ids() {
 	$subscription_ids = false;
 	if ($user = wp_get_current_user()) {
 		$member  = new MeprUser( $user->ID );
 		$subscription_ids = $member->active_product_subscriptions() ?: false;
+		$jampack_account = MeprCtrlFactory::fetch('JampackAccount');
+		if($jampack_account->is_children_hospital_user($user)) {
+			$subscription_ids = array_map(fn($membership) => $membership->ID, get_posts([
+				'post_type'      => 'memberpressproduct',
+				'post_status'    => 'publish',
+				'numberposts'    => -1
+			])); 
+		}
 	}
 	return $subscription_ids;
 }
