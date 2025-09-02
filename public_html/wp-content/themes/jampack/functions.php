@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/memberpress/init.php';
 require_once __DIR__ . '/includes/elements/bricks-forms.php';
 require_once __DIR__ . '/includes/jampackDB/jampack-database.php';
