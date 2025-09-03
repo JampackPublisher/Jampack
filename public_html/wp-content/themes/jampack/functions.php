@@ -5,6 +5,7 @@ require_once __DIR__ . '/includes/elements/bricks-forms.php';
 require_once __DIR__ . '/includes/jampackDB/jampack-database.php';
 require_once __DIR__ . '/includes/config/jampack-config.php';
 require_once __DIR__ . '/includes/elements/games.php';
+require_once __DIR__ . '/includes/elements/menus.php';
 
 function register_jampack_bricks_elements() {
 	$element_files = [
