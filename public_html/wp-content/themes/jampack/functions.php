@@ -7,11 +7,13 @@ require_once __DIR__ . '/includes/config/jampack-config.php';
 require_once __DIR__ . '/includes/elements/games.php';
 require_once __DIR__ . '/includes/elements/menus.php';
 require_once __DIR__ . '/includes/elements/login-redirections.php';
+require_once __DIR__ . '/includes/elements/playpass-redirections.php';
 
 function register_jampack_bricks_elements() {
 	$element_files = [
 		__DIR__ . '/includes/elements/Jampack_Game_Screenshots.php',
 		__DIR__ . '/includes/elements/Jampack_Game_Favorite_Button.php',
+		__DIR__ . '/includes/elements/Jampack_Game_Fullscreen_Button.php',
 		__DIR__ . '/includes/elements/Jampack_Tooltip.php',
 		__DIR__ . '/includes/elements/Jampack_Slider_Nested.php',
 	];

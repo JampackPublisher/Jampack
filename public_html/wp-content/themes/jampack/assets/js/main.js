@@ -157,7 +157,9 @@ document.addEventListener('DOMContentLoaded', function() {
             </svg>
         `;
         backElm.innerHTML = iconSvg;
-        backElm.href = window.location.origin;
+        // Check if user has active subscription via PHP-generated data
+        const hasActiveSubscription = document.body.dataset.hasActiveSubscription === 'true';
+        backElm.href = hasActiveSubscription ? window.location.origin + '/play-pass/' : window.location.origin;
         backElm.style.marginRight = '15px';
         backElm.style.color = '#fff';
         const siteBranding = document.querySelector('.site-branding');
@@ -169,3 +171,113 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+window.jampackFullscreen = {
+
+    /**
+     * Launches fullscreen mode.
+     * @param {string} selector - Optional CSS selector. If empty, auto-detects game elements
+     * @returns {boolean} True if fullscreen was successfully launched, false otherwise
+     * @example
+     * // Auto-detect game element
+     * jampackFullscreen.launch('');
+     * 
+     * // Target specific element
+     * jampackFullscreen.launch('#my-game-iframe');
+     */
+    launch: function(selector) {
+        const element = this.findGameElement(selector);
+        if (!element) {
+            console.warn('Jampack Fullscreen: No element found for selector:', selector);
+            return false;
+        }
+        
+        return this.enterFullscreen(element);
+    },
+    
+    /**
+     * Finds a suitable game element to make fullscreen
+     * @param {string} selector - CSS selector for target element
+     * @returns {Element|null} The DOM element to make fullscreen, or null if none found
+     * @private
+     */
+    findGameElement: function(selector) {
+        if (selector && selector.trim()) {
+            const element = document.querySelector(selector);
+            if (element) return element;
+        }
+        
+        const gameSelectors = [
+            '.game-container',
+            '.game-iframe', 
+            '.game-content',
+            '#game-container',
+            'iframe',
+            'canvas'
+        ];
+        
+        for (let sel of gameSelectors) {
+            const elements = document.querySelectorAll(sel);
+            if (elements.length > 0) {
+                // Return the container or the element itself
+                return elements[0].closest('.brxe-div, .bricks-element') || elements[0];
+            }
+        }
+        
+        return null;
+    },
+    
+    /**
+     * Enters fullscreen mode for the specified element using cross-browser API
+     * @param {Element} element - DOM element to make fullscreen
+     * @returns {boolean} True if fullscreen request was successful, false if not supported
+     * @private
+     */
+    enterFullscreen: function(element) {
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        } else {
+            return false;
+        }
+        return true;
+    },
+    
+    /**
+     * Exits fullscreen mode using cross-browser API
+     * @returns {void}
+     * @example
+     * jampackFullscreen.exit();
+     */
+    exit: function() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    },
+    
+    /**
+     * Checks if currently in fullscreen mode
+     * @returns {boolean} True if any element is currently in fullscreen, false otherwise
+     * @example
+     * if (jampackFullscreen.isActive()) {
+     *     console.log('Currently in fullscreen');
+     * }
+     */
+    isActive: function() {
+        return !!(document.fullscreenElement || 
+                 document.webkitFullscreenElement || 
+                 document.mozFullScreenElement || 
+                 document.msFullscreenElement);
+    }
+};
