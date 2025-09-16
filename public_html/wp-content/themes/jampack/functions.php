@@ -13,7 +13,6 @@ function register_jampack_bricks_elements() {
 	$element_files = [
 		__DIR__ . '/includes/elements/Jampack_Game_Screenshots.php',
 		__DIR__ . '/includes/elements/Jampack_Game_Favorite_Button.php',
-		__DIR__ . '/includes/elements/Jampack_Game_Fullscreen_Button.php',
 		__DIR__ . '/includes/elements/Jampack_Tooltip.php',
 		__DIR__ . '/includes/elements/Jampack_Slider_Nested.php',
 	];
