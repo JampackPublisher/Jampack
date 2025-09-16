@@ -20,10 +20,10 @@ function jampack_get_playpass_product_ids() {
     // Based on your existing code pattern, these appear to be your membership product IDs
     // Update these with your actual Play Pass product IDs
     return [
-        1269, // Play Pass - $1.99/month
-        1270, // Player+ Pass - $4.99/month
-        1271, // Multipass - $9.99/month
-        2403, // Multipass (Annual Membership) - $59.94/year then $119.88/year
+        1269, // Play Pass 
+        1270, // Player+ Pass 
+        1271, // Multipass - Monthly
+        2403, // Multipass - Anual
         // Add additional Play Pass product IDs here as needed
     ];
 }
@@ -71,12 +71,15 @@ function jampack_playpass_thankyou_redirect($url, $args = []) {
  */
 function jampack_playpass_signup_redirect($txn) {
     $product = $txn->product();
-    
+
     if (jampack_is_playpass_product($product)) {
-        // Only redirect if we haven't already redirected via thank you page
-        if (!headers_sent()) {
-            wp_redirect(home_url('/play-pass/'));
-            exit;
+        // Ensure transaction is complete and successful before redirecting
+        if ($txn->status == 'complete' || $txn->status == 'confirmed') {
+            // Only redirect if we haven't already redirected via thank you page
+            if (!headers_sent()) {
+                wp_redirect(home_url('/play-pass/'));
+                exit;
+            }
         }
     }
 }
@@ -189,20 +192,7 @@ function jampack_add_subscription_data_to_body() {
 }
 add_action('wp_footer', 'jampack_add_subscription_data_to_body');
 
-// Register the hooks in order of preference
-// 1. Thank you page URL filter (most reliable)
 add_filter('mepr-thankyou-page-url', 'jampack_playpass_thankyou_redirect', 10, 2);
-
-// 2. Checkout URL filter (for immediate redirects)
-add_filter('mepr-signup-checkout-url', 'jampack_playpass_checkout_redirect', 10, 2);
-
-// 3. Immediate redirect hooks (HIGHER PRIORITY - bypasses thank you page)
-add_action('mepr-signup', 'jampack_playpass_immediate_redirect', 5, 1);
-add_action('mepr-free-signup', 'jampack_playpass_immediate_redirect', 5, 1);
-add_action('mepr-non-recurring-signup', 'jampack_playpass_immediate_redirect', 5, 1);
-
-// 4. Backup signup hooks (lower priority)
-add_action('mepr-signup', 'jampack_playpass_signup_redirect', 10, 1);
 
 /**
  * Debug logging for Play Pass redirections
