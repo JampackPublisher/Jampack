@@ -12,20 +12,24 @@ if (!defined('ABSPATH')) {
 
 /**
  * Get Play Pass product IDs
- * Based on existing pattern in functions.php where specific product IDs are used
  * 
  * @return array Array of Play Pass product IDs
  */
 function jampack_get_playpass_product_ids() {
-    // Based on your existing code pattern, these appear to be your membership product IDs
-    // Update these with your actual Play Pass product IDs
-    return [
-        1269, // Play Pass 
-        1270, // Player+ Pass 
-        1271, // Multipass - Monthly
-        2403, // Multipass - Anual
-        // Add additional Play Pass product IDs here as needed
-    ];
+    $playpass_products = get_posts([
+        'post_type' => 'memberpressproduct',
+        'meta_query' => [
+            [
+                'key' => 'playpass_product', // Custom meta field
+                'value' => 'yes',
+                'compare' => '='
+            ]
+        ],
+        'fields' => 'ids',
+        'numberposts' => -1
+    ]);
+    
+    return $playpass_products;
 }
 
 /**
@@ -37,7 +41,7 @@ function jampack_get_playpass_product_ids() {
  */
 function jampack_is_playpass_product($product) {
     $product_id = is_object($product) ? $product->ID : (int) $product;
-    
+
     return in_array($product_id, jampack_get_playpass_product_ids());
 }
 
@@ -54,73 +58,13 @@ function jampack_playpass_thankyou_redirect($url, $args = []) {
     if (!isset($args['membership_id']) || empty($args['membership_id'])) {
         return $url;
     }
-    
+
     // Check if this is a Play Pass product
     if (jampack_is_playpass_product((int) $args['membership_id'])) {
         return home_url('/play-pass/');
     }
-    
+
     return $url;
-}
-
-/**
- * Handle post-signup redirects for Play Pass products
- * This is a backup method that fires after successful signup
- * 
- * @param MeprTransaction $txn The completed transaction
- */
-function jampack_playpass_signup_redirect($txn) {
-    $product = $txn->product();
-
-    if (jampack_is_playpass_product($product)) {
-        // Ensure transaction is complete and successful before redirecting
-        if ($txn->status == 'complete' || $txn->status == 'confirmed') {
-            // Only redirect if we haven't already redirected via thank you page
-            if (!headers_sent()) {
-                wp_redirect(home_url('/play-pass/'));
-                exit;
-            }
-        }
-    }
-}
-
-/**
- * Handle checkout URL redirects for Play Pass products
- * This handles immediate redirects after signup form processing
- * 
- * @param string $checkout_url The default checkout URL
- * @param MeprTransaction $txn The transaction object
- * @return string Modified checkout URL for Play Pass products
- */
-function jampack_playpass_checkout_redirect($checkout_url, $txn) {
-    $product = $txn->product();
-    
-    if (jampack_is_playpass_product($product)) {
-        return home_url('/play-pass/');
-    }
-    
-    return $checkout_url;
-}
-
-/**
- * Skip thank you page entirely for Play Pass products
- * This ensures immediate redirect without showing thank you page
- * 
- * @param MeprTransaction $txn The transaction object
- */
-function jampack_playpass_immediate_redirect($txn) {
-    $product = $txn->product();
-    
-    if (jampack_is_playpass_product($product)) {
-        // Debug logging
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('Jampack: Immediate redirect triggered for product ID: ' . $product->ID);
-        }
-        
-        // Immediate redirect - bypasses thank you page completely
-        wp_redirect(home_url('/play-pass/'));
-        exit;
-    }
 }
 
 /**
@@ -135,7 +79,7 @@ function jampack_home_to_playpass_redirect() {
         // if (current_user_can('administrator')) {
         //     return;
         // }
-        
+
         // Check if user has active subscription
         if (jampack_user_has_active_subscription()) {
             wp_redirect(home_url('/play-pass/'));
@@ -155,19 +99,19 @@ function jampack_user_has_active_subscription() {
     if (!is_user_logged_in()) {
         return false;
     }
-    
+
     // Get active subscription IDs using existing function
     $active_subscription_ids = get_current_user_subscription_ids();
-    
+
     // If no active subscriptions, return false
     if (empty($active_subscription_ids)) {
         return false;
     }
-    
+
     // Check if any active subscription matches our Play Pass products
     $playpass_product_ids = jampack_get_playpass_product_ids();
     $has_playpass_subscription = !empty(array_intersect($active_subscription_ids, $playpass_product_ids));
-    
+
     // Debug logging
     if (defined('WP_DEBUG') && WP_DEBUG) {
         error_log(sprintf(
@@ -177,7 +121,7 @@ function jampack_user_has_active_subscription() {
             $has_playpass_subscription ? 'YES' : 'NO'
         ));
     }
-    
+
     return $has_playpass_subscription;
 }
 add_action('template_redirect', 'jampack_home_to_playpass_redirect', 1);
