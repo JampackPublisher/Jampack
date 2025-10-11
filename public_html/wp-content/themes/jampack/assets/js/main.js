@@ -42,6 +42,13 @@ function game_fav_button_handler(element, id) {
         })
 }
 
+/**
+ * Sets up synchronization between main and thumbnail sliders with event listeners.
+ * @param {string} main_id - The ID of the main slider instance in bricksData.splideInstances.
+ * @param {string} thumb_id - The ID of the thumbnail slider instance in bricksData.splideInstances.
+ * @returns {Object} An object containing a sync function to manually trigger synchronization.
+ */
+
 const bricksSyncSliders = (main_id, thumb_id) => {
     let initTimeout, resizeTimeout
 
@@ -89,27 +96,184 @@ document.addEventListener('DOMContentLoaded', () => {
     const myGamesSlider = bricksSyncSliders('qrvcyr', 'ucsibe')
     myGamesSlider.sync()
 
+    const featuredEarlyAccessSlider = bricksSyncSliders('uhsjsd', 'wxyovo')
+    featuredEarlyAccessSlider.sync()
+
+    // Archive Hero slider thumbnail navigation
     const archiveHeroSliderThumbs = document.getElementById('brxe-oeieah-track')?.getElementsByTagName('a')
     const archiveHeroMainSlider = bricksData?.splideInstances['wfoabz']
     if (archiveHeroSliderThumbs && archiveHeroSliderThumbs.length > 0) {
         for (let i = 0; i < archiveHeroSliderThumbs.length; i++) {
-            archiveHeroSliderThumbs[i].addEventListener('mouseover', function(e) {
-                if (e.target.closest('.splide__slide') && e.target.closest('.splide__slide').classList.contains('is-active')) {
-                    return;
-                }
-                let actives = document.querySelectorAll('.splide__slide.is-active')
-                if (actives.length > 0) {
-                    for (let active of actives) {
-                        active.classList.remove('is-active')
+            archiveHeroSliderThumbs[i].addEventListener('click', function(e) {
+                e.preventDefault()
+                
+                const thumbnailSlide = this.closest('.splide__slide')
+                const isCurrentlyActive = thumbnailSlide?.classList.contains('is-active') && thumbnailSlide?.classList.contains('is-visible')
+                
+                if (isCurrentlyActive) {
+                    if (handleGameRedirect(this)) {
+                        return
                     }
                 }
-                e.target.closest('.splide__slide').classList.add('is-active')
+                
+                updateSliderActiveState('wfoabz', i)
+                
                 if (archiveHeroMainSlider) {
                     archiveHeroMainSlider.go(i)
                 }
             })
         }
     }
+
+    // Archive Hero main slider click handlers
+    const archiveHeroMainSlides = document.querySelectorAll('#wfoabz .splide__slide')
+    if (archiveHeroMainSlides.length > 0) {
+        archiveHeroMainSlides.forEach((slide, index) => {
+            slide.addEventListener('click', function() {
+                const isCurrentlyActive = slide.classList.contains('is-active') && slide.classList.contains('is-visible')
+                
+                if (isCurrentlyActive) {
+                    if (handleGameRedirect(slide)) {
+                        return
+                    }
+                }
+                
+                updateSliderActiveState('wfoabz', index)
+                
+                if (archiveHeroMainSlider) {
+                    archiveHeroMainSlider.go(index)
+                }
+            })
+        })
+    }
+
+    // Archive Hero slider event callbacks
+    if (archiveHeroMainSlider && archiveHeroMainSlider.on) {
+        archiveHeroMainSlider.on('moved', function(newIndex) {
+            updateSliderActiveState('wfoabz', newIndex)
+        })
+    }
+
+    // Featured Early Access slider thumbnail navigation
+    const featuredEarlyAccessSliderThumbs = document.getElementById('brxe-wxyovo-track')?.getElementsByTagName('a')
+    const featuredEarlyAccessMainSlider = bricksData?.splideInstances['uhsjsd']
+    if (featuredEarlyAccessSliderThumbs && featuredEarlyAccessSliderThumbs.length > 0) {
+        for (let i = 0; i < featuredEarlyAccessSliderThumbs.length; i++) {
+            featuredEarlyAccessSliderThumbs[i].addEventListener('click', function(e) {
+                e.preventDefault()
+                
+                const thumbnailSlide = this.closest('.splide__slide')
+                const isCurrentlyActive = thumbnailSlide?.classList.contains('is-active') && thumbnailSlide?.classList.contains('is-visible')
+                
+                if (isCurrentlyActive) {
+                    if (handleGameRedirect(this)) {
+                        return
+                    }
+                }
+                
+                updateSliderActiveState('uhsjsd', i)
+                
+                if (featuredEarlyAccessMainSlider) {
+                    featuredEarlyAccessMainSlider.go(i)
+                }
+            })
+        }
+    }
+
+    // Game redirect handler
+    const handleGameRedirect = function(element) {
+        const gameUrl = element.getAttribute('href') || 
+                       element.querySelector('a')?.getAttribute('href') ||
+                       element.closest('a')?.getAttribute('href')
+        
+        if (gameUrl && gameUrl !== '#' && gameUrl !== 'javascript:void(0)') {
+            window.location.href = gameUrl
+            return true
+        }
+        return false
+    }
+
+    // Slider active state manager
+    const updateSliderActiveState = function(sliderId, activeIndex) {
+        document.querySelectorAll(`#${sliderId} .splide__slide.is-active`).forEach(active => {
+            active.classList.remove('is-active', 'is-visible')
+        })
+        
+        const targetSlide = document.querySelector(`#${sliderId} .splide__slide:nth-child(${activeIndex + 1})`)
+        if (targetSlide) {
+            targetSlide.classList.add('is-active', 'is-visible')
+        }
+    }
+
+    // Featured Early Access main slider click handlers
+    const featuredEarlyAccessMainSlides = document.querySelectorAll('#uhsjsd .splide__slide')
+    if (featuredEarlyAccessMainSlides.length > 0) {
+        featuredEarlyAccessMainSlides.forEach((slide, index) => {
+            slide.addEventListener('click', function() {
+                const isCurrentlyActive = slide.classList.contains('is-active') && slide.classList.contains('is-visible')
+                
+                if (isCurrentlyActive) {
+                    if (handleGameRedirect(slide)) {
+                        return
+                    }
+                }
+                
+                updateSliderActiveState('uhsjsd', index)
+                
+                if (featuredEarlyAccessMainSlider) {
+                    featuredEarlyAccessMainSlider.go(index)
+                }
+            })
+        })
+    }
+
+    // Featured Early Access slider event callbacks
+    if (featuredEarlyAccessMainSlider && featuredEarlyAccessMainSlider.on) {
+        featuredEarlyAccessMainSlider.on('moved', function(newIndex) {
+            updateSliderActiveState('uhsjsd', newIndex)
+        })
+    }
+
+    // Additional sliders configuration
+    const sliderConfigs = [
+        { mainId: 'zhiebz', name: 'Player Pass' },
+        { mainId: '7a7095', name: 'Player Rewards' },
+        { mainId: 'hvncdm', name: 'Subscription Plans' },
+        { mainId: 'qrvcyr', name: 'My Games' }
+    ]
+
+    sliderConfigs.forEach(config => {
+        const mainSlider = bricksData?.splideInstances[config.mainId]
+        if (mainSlider) {
+            const mainSlides = document.querySelectorAll(`#${config.mainId} .splide__slide`)
+            if (mainSlides.length > 0) {
+                mainSlides.forEach((slide, index) => {
+                    slide.addEventListener('click', function() {
+                        const isCurrentlyActive = slide.classList.contains('is-active') && slide.classList.contains('is-visible')
+                        
+                        if (isCurrentlyActive) {
+                            if (handleGameRedirect(slide)) {
+                                return
+                            }
+                        }
+                        
+                        updateSliderActiveState(config.mainId, index)
+                        
+                        if (mainSlider) {
+                            mainSlider.go(index)
+                        }
+                    })
+                })
+            }
+
+            if (mainSlider.on) {
+                mainSlider.on('moved', function(newIndex) {
+                    updateSliderActiveState(config.mainId, newIndex)
+                })
+            }
+        }
+    })
+
 
     setTimeout(() => {
         const instances = []
