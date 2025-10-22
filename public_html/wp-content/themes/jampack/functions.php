@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/memberpress/init.php';
 require_once __DIR__ . '/includes/elements/bricks-forms.php';
+require_once __DIR__ . '/includes/elements/user-registration.php';
 require_once __DIR__ . '/includes/jampackDB/jampack-database.php';
 require_once __DIR__ . '/includes/config/jampack-config.php';
 require_once __DIR__ . '/includes/elements/games.php';

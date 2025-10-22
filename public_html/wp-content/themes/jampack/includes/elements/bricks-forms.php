@@ -18,6 +18,10 @@ function handle_forms($form)
     case 'game-submission-form-id-1':
       handle_game_submission_form($form);
       break;
+    
+    case 'user-registration-form':
+      handle_user_registration_form($form);
+      break;
 
     default:
       $error_message = 'Unhandled Bricks form action';
