@@ -18,18 +18,27 @@ if (!defined('ABSPATH')) {
  */
 function handle_user_registration_form($form)
 {
+    // Add debugging
+    error_log("JaamPack: Registration handler called");
+    
     $fields = $form->get_fields();
     
-    // Get form field values
-    $user_name = sanitize_text_field($fields['fullname'] ?? '');
-    $user_email = sanitize_email($fields['email'] ?? '');
-    $user_password = $fields['password'] ?? '';
+    // Debug: Log all form fields
+    error_log("JaamPack: Form fields received: " . print_r($fields, true));
+    
+    // Get form field values (Bricks prefixes field names with 'form-field-')
+    $user_name = sanitize_text_field($fields['form-field-fullname'] ?? '');
+    $user_email = sanitize_email($fields['form-field-email'] ?? '');
+    $user_password = $fields['form-field-password'] ?? '';
+    
+    // Debug: Log extracted values
+    error_log("JaamPack: Extracted - Name: '$user_name', Email: '$user_email', Password length: " . strlen($user_password));
     
     // Validate inputs
     $errors = [];
     
     if (empty($user_name)) {
-        $errors[] = 'Please enter your full name.';
+                $errors[] = 'Please enter your full name.';
     }
     
     if (empty($user_email)) {
@@ -87,7 +96,7 @@ function handle_user_registration_form($form)
     error_log("JaamPack: New user registered - ID: {$user_id}, Email: {$user_email}");
     
     // Success
-    jampack_set_form_result($form, 'UserRegistrationAction', 'success', 'Registration successful! Please check your email for login details.');
+    jampack_set_form_result($form, 'UserRegistrationAction', 'success', 'Registration successful!');
 }
 
 /**
