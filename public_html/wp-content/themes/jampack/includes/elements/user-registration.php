@@ -5,10 +5,8 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * JaamPack User Registration System
- * 
- * Handles user registration through Bricks forms with proper validation,
- * security, and integration with WordPress user system.
+ * JaamPack User Registration
+ * Handles user registration through Bricks forms with proper validation, security, and integration with WordPress.
  */
 
 /**
@@ -116,11 +114,12 @@ function jampack_set_form_result($form, $action, $type, $message) {
 }
 
 /**
- * Add register button to login pages via JavaScript
+ * Add register button to MemberPress login forms using proper hooks
+ * This is the OPTIMAL approach as recommended by MemberPress documentation
  */
-function jampack_add_register_button_script() {
-    // Only add on pages (not posts or other content types)
-    if (!is_page() && !is_front_page()) {
+function jampack_add_register_button_to_mepr_login($atts = []) {
+    // Only show if user is not logged in
+    if (is_user_logged_in()) {
         return;
     }
     
@@ -129,57 +128,108 @@ function jampack_add_register_button_script() {
     $registration_url = $registration_page ? get_permalink($registration_page->ID) : site_url('/register');
     
     ?>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Look for common login form selectors
-        var loginForms = document.querySelectorAll('form[class*="login"], form[id*="login"], .mepr-login-form, .bricks-form');
-        
-        if (loginForms.length > 0) {
-            loginForms.forEach(function(form) {
-                // Check if register button already exists
-                if (form.querySelector('.jampack-register-btn')) {
-                    return;
-                }
-                
-                // Create register button
-                var registerDiv = document.createElement('div');
-                registerDiv.className = 'jampack-register-section';
-                registerDiv.style.cssText = 'text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;';
-                
-                var registerText = document.createElement('p');
-                registerText.style.cssText = 'margin: 0 0 10px 0; color: #666; font-size: 14px;';
-                registerText.textContent = "Don't have an account?";
-                
-                var registerBtn = document.createElement('a');
-                registerBtn.href = '<?php echo esc_js($registration_url); ?>';
-                registerBtn.className = 'jampack-register-btn';
-                registerBtn.textContent = 'Create Account';
-                registerBtn.style.cssText = 'display: inline-block; padding: 12px 24px; background: #0073aa; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500; transition: all 0.3s ease;';
-                
-                // Add hover effect
-                registerBtn.addEventListener('mouseenter', function() {
-                    this.style.background = '#005a87';
-                    this.style.transform = 'translateY(-1px)';
-                    this.style.boxShadow = '0 2px 8px rgba(0,115,170,0.3)';
-                });
-                registerBtn.addEventListener('mouseleave', function() {
-                    this.style.background = '#0073aa';
-                    this.style.transform = 'translateY(0)';
-                    this.style.boxShadow = 'none';
-                });
-                
-                registerDiv.appendChild(registerText);
-                registerDiv.appendChild(registerBtn);
-                
-                // Insert after the form
-                form.parentNode.insertBefore(registerDiv, form.nextSibling);
-            });
-        }
-    });
-    </script>
+    <div class="jampack-register-section" style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+        <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">Don't have an account?</p>
+        <a href="<?php echo esc_url($registration_url); ?>" 
+           class="jampack-register-btn" 
+           style="display: inline-block; padding: 12px 24px; background: #0073aa; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500; transition: all 0.3s ease;">
+            Create Account
+        </a>
+    </div>
+    
+    <style>
+    .jampack-register-btn:hover {
+        background: #005a87 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,115,170,0.3);
+    }
+    </style>
     <?php
 }
-add_action('wp_footer', 'jampack_add_register_button_script');
+
+// Hook into MemberPress login form - this is the RECOMMENDED approach
+add_action('mepr-login-form-after-submit', 'jampack_add_register_button_to_mepr_login');
+
+/**
+ * Add register button to Bricks login forms using proper hooks
+ * This handles Bricks forms with login action
+ */
+function jampack_add_register_button_to_bricks_login($form) {
+    // Only show if user is not logged in
+    if (is_user_logged_in()) {
+        return;
+    }
+    
+    $settings = $form->get_settings();
+    
+    // Check if this form has login action
+    if (!isset($settings['actions']) || !in_array('login', $settings['actions'])) {
+        return;
+    }
+    
+    // Get registration page URL
+    $registration_page = get_page_by_path('register');
+    $registration_url = $registration_page ? get_permalink($registration_page->ID) : site_url('/register');
+    
+    ?>
+    <div class="jampack-register-section" style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+        <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">Don't have an account?</p>
+        <a href="<?php echo esc_url($registration_url); ?>" 
+           class="jampack-register-btn" 
+           style="display: inline-block; padding: 12px 24px; background: #0073aa; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500; transition: all 0.3s ease;">
+            Create Account
+        </a>
+    </div>
+    
+    <style>
+    .jampack-register-btn:hover {
+        background: #005a87 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,115,170,0.3);
+    }
+    </style>
+    <?php
+}
+
+// Hook into Bricks login forms - this is the RECOMMENDED approach
+add_action('bricks/form/custom_action', 'jampack_add_register_button_to_bricks_login');
+
+/**
+ * Add register button to WordPress default login forms using proper hooks
+ * This handles wp-login.php and other WordPress login forms
+ */
+function jampack_add_register_button_to_wp_login() {
+    // Only show if user is not logged in
+    if (is_user_logged_in()) {
+        return;
+    }
+    
+    // Get registration page URL
+    $registration_page = get_page_by_path('register');
+    $registration_url = $registration_page ? get_permalink($registration_page->ID) : site_url('/register');
+    
+    ?>
+    <div class="jampack-register-section" style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+        <p style="margin: 0 0 10px 0; color: #666; font-size: 14px;">Don't have an account?</p>
+        <a href="<?php echo esc_url($registration_url); ?>" 
+           class="jampack-register-btn" 
+           style="display: inline-block; padding: 12px 24px; background: #0073aa; color: white; text-decoration: none; border-radius: 4px; font-size: 14px; font-weight: 500; transition: all 0.3s ease;">
+            Create Account
+        </a>
+    </div>
+    
+    <style>
+    .jampack-register-btn:hover {
+        background: #005a87 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0,115,170,0.3);
+    }
+    </style>
+    <?php
+}
+
+// Hook into WordPress login forms
+add_action('login_form', 'jampack_add_register_button_to_wp_login');
 
 /**
  * Enable user registration by default
