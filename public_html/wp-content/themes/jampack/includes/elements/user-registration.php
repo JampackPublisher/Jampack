@@ -252,18 +252,9 @@ add_action('init', 'jampack_enable_registration');
 function jampack_validate_registration_data($name, $email, $password) {
     $errors = [];
     
-    // Additional validation rules can be added here
-    // For example: password complexity, name format, etc.
+    //TODO: Add Extra Validation here with Email, Password, or name whatever is necessary, Default validation by Memberpress seem sufficent for now
     
     return $errors;
-}
-
-/**
- * Custom registration redirect (if needed)
- */
-function jampack_registration_redirect() {
-    // Custom redirect logic can be added here
-    // For example: redirect to specific page after registration
 }
 
 /**
