@@ -259,3 +259,8 @@ function filter_menu_by_membership( $items ) {
 
 add_filter( 'wp_get_nav_menu_items', 'filter_menu_by_membership', 10, 1 );
 
+// Logout redirects to /login - still requires user confirmation to logout
+add_action('wp_logout', function() {
+  wp_safe_redirect(home_url('/login'));
+  exit;
+});
