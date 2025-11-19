@@ -113,3 +113,16 @@ add_action('init', function() {
         maybe_redirect_member_from_admin_jampack($roles);
     });
 });
+
+/**
+ * [TEMPORAL WORKAROUND]
+ * Temporal callback to adjust subscription expiration dates.
+ */
+add_action('mepr-txn-status-confirmed', function($txn) {
+	$grace_period = MeprUtils::db_date_to_ts($txn->created_at) + MeprUtils::days(2);
+	$expires_at = MeprUtils::db_date_to_ts($txn->expires_at);
+	if($txn->txn_type == 'subscription_confirmation' && $expires_at < $grace_period) {
+		$txn->expires_at = MeprUtils::ts_to_mysql_date(time() + MeprUtils::days(30), 'Y-m-d 23:59:59');
+		$txn->store();
+	}
+});
