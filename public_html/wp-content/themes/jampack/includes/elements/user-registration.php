@@ -647,13 +647,14 @@ add_action('init', 'jampack_signup_enable_registration');
 function jampack_signup_validate_registration_data($name, $email, $password) {
     $errors = [];
     
-    //TODO: Add Extra Validation here with Email, Password, or name whatever is necessary, Default validation by Memberpress seem sufficent for now
+    // TODO: Add Extra Validation here with Email, Password, or name whatever is necessary, Default validation by Memberpress seem sufficent for now
     
     return $errors;
 }
 
 /**
  * Log registration attempts for security monitoring
+ * TODO: Not yet used, We should Implement logging so that account creation failures can be traced by team
  * 
  * @param string $email Email attempted
  * @param bool $success Whether registration was successful
