@@ -13,6 +13,26 @@ if (!defined('ABSPATH')) {
 define('JAMPACK_VERIFICATION_EXPIRY', 24 * HOUR_IN_SECONDS); // 24 hours expiration
 
 /**
+ * Log debug message only if WP_DEBUG is enabled
+ * Always logs errors and important events
+ * 
+ * @param string $message Log message
+ * @param string $level 'debug' or 'error'
+ */
+function jampack_signup_log($message, $level = 'debug') {
+    // Always log errors and important failures
+    if ($level === 'error') {
+        error_log("Jampack: {$message}");
+        return;
+    }
+    
+    // Only log debug messages if WP_DEBUG is enabled
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        error_log("Jampack: {$message}");
+    }
+}
+
+/**
  * Handle user registration form submission
  * Stores registration data temporarily and sends verification email
  *
@@ -20,18 +40,18 @@ define('JAMPACK_VERIFICATION_EXPIRY', 24 * HOUR_IN_SECONDS); // 24 hours expirat
  */
 function handle_user_registration_form($form)
 {
-    error_log("Jampack: Registration handler called");
+    jampack_signup_log("Registration handler called", 'debug');
     
     $fields = $form->get_fields();
     
-    error_log("Jampack: Form fields received: " . print_r($fields, true));
+    jampack_signup_log("Form fields received: " . print_r($fields, true), 'debug');
     
     // Get form field values (Bricks prefixes field names with 'form-field-')
     $user_name = sanitize_text_field($fields['form-field-fullname'] ?? '');
     $user_email = sanitize_email($fields['form-field-email'] ?? '');
     $user_password = $fields['form-field-password'] ?? '';
     
-    error_log("Jampack: Extracted - Name: '$user_name', Email: '$user_email', Password length: " . strlen($user_password));
+    jampack_signup_log("Extracted - Name: '$user_name', Email: '$user_email', Password length: " . strlen($user_password), 'debug');
     
     // Validate inputs
     $errors = [];
@@ -118,7 +138,7 @@ function handle_user_registration_form($form)
         return;
     }
     
-    error_log("Jampack: Pending registration created - Email: {$user_email}, Token: {$verification_token}");
+    jampack_signup_log("Pending registration created - Email: {$user_email}, Token: {$verification_token}", 'debug');
     
     // Success message - displayed in Bricks form
     jampack_signup_set_form_result($form, 'UserRegistrationAction', 'success', 
@@ -242,9 +262,9 @@ function jampack_signup_send_verification_email($email, $token, $name) {
     $sent = wp_mail($email, $subject, $html_message, $headers);
     
     if ($sent) {
-        error_log("Jampack: Verification email sent to {$email}");
+        jampack_signup_log("Verification email sent to {$email}", 'debug');
     } else {
-        error_log("Jampack: Failed to send verification email to {$email}");
+        jampack_signup_log("Failed to send verification email to {$email}", 'error');
     }
     
     return $sent;
@@ -327,9 +347,9 @@ function jampack_signup_send_welcome_email($user_id, $email, $name) {
     $sent = wp_mail($email, $subject, $html_message, $headers);
     
     if ($sent) {
-        error_log("Jampack: Welcome email sent to {$email}");
+        jampack_signup_log("Welcome email sent to {$email}", 'debug');
     } else {
-        error_log("Jampack: Failed to send welcome email to {$email}");
+        jampack_signup_log("Failed to send welcome email to {$email}", 'error');
     }
     
     return $sent;
@@ -414,7 +434,7 @@ function jampack_signup_handle_email_verification() {
     $user_id = wp_insert_user($user_data);
     
     if (is_wp_error($user_id)) {
-        error_log("Jampack: Failed to create user after verification - " . $user_id->get_error_message());
+        jampack_signup_log("Failed to create user after verification - " . $user_id->get_error_message(), 'error');
         wp_die(
             'An error occurred while creating your account. Please contact support.',
             'Registration Error',
@@ -433,7 +453,7 @@ function jampack_signup_handle_email_verification() {
     // Notify admin of new registration
     wp_new_user_notification($user_id, null, 'admin');
     
-    error_log("Jampack: User verified and created - ID: {$user_id}, Email: {$registration_data['user_email']}");
+    jampack_signup_log("User verified and created - ID: {$user_id}, Email: {$registration_data['user_email']}", 'debug');
     
     // Redirect to success page or login
     $redirect_url = add_query_arg('verified', 'success', wp_login_url());
@@ -471,7 +491,7 @@ function jampack_signup_cleanup_expired_registrations() {
     // WordPress automatically cleans up expired transients, but we can add custom cleanup here
     // For a more robust solution, consider using a custom database table
     
-    error_log("Jampack: Running cleanup for expired registrations");
+    jampack_signup_log("Running cleanup for expired registrations", 'debug');
 }
 add_action('jampack_signup_daily_cleanup', 'jampack_signup_cleanup_expired_registrations');
 
@@ -674,5 +694,5 @@ function jampack_signup_log_registration_attempt($email, $success = true, $error
         ? "Registration successful for: {$email}" 
         : "Registration failed for: {$email} - Error: {$error_message}";
     
-    error_log("Jampack Registration: {$log_message}");
+    jampack_signup_log("Registration: {$log_message}", 'error');
 }
