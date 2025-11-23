@@ -162,11 +162,20 @@ function jampack_signup_get_pending_registration($email) {
 function jampack_signup_get_pending_registration_by_token($token) {
     global $wpdb;
     
-    // Search through transients for the token
+    // Validate token format (32-character hex string) - prevents SQL injection
+    if (empty($token) || !preg_match('/^[a-f0-9]{32}$/i', $token)) {
+        return false;
+    }
+    
+    // Search through transients for the token using prepared statement
     $transient_keys = $wpdb->get_col(
-        "SELECT option_name FROM {$wpdb->options} 
-         WHERE option_name LIKE '_transient_jampack_pending_registration_%' 
-         AND option_value LIKE '%" . esc_sql($token) . "%'"
+        $wpdb->prepare(
+            "SELECT option_name FROM {$wpdb->options} 
+             WHERE option_name LIKE %s 
+             AND option_value LIKE %s",
+            $wpdb->esc_like('_transient_jampack_pending_registration_') . '%',
+            '%' . $wpdb->esc_like($token) . '%'
+        )
     );
     
     foreach ($transient_keys as $transient_key) {
