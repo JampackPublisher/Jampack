@@ -3,6 +3,7 @@ services:
   wordpress:
     image: wordpress:latest
     container_name: wp-jampack
+    restart: always
     ports:
       - "8080:80"
     volumes:
@@ -19,6 +20,7 @@ services:
     image: mariadb:10.5
     container_name: wp-db-jampack
     command: --sql-mode="NO_ENGINE_SUBSTITUTION"
+    restart: always
     environment:
       MYSQL_DATABASE: wp_db
       MYSQL_USER: wp_user
