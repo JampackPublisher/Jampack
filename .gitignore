@@ -42,3 +42,6 @@ build/
 
 # Avoid ignoring the database creation script
 !/jampack_database/createDB.sql
+
+# Ignore Docker logs directory
+docker_apache/logs/
