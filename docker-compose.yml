@@ -1,13 +1,15 @@
 
 services:
   wordpress:
-    image: wordpress:latest
+    build:
+      context: ./docker_wordpress
+      # dockerfile: Dockerfile
+    image: custom-wordpress
     container_name: wp-jampack
     restart: always
-    ports:
-      - "8080:80"
     volumes:
       - ./public_html:/var/www/html
+      - ./docker_wordpress/php-fpm.d/zz-docker.conf:/usr/local/etc/php-fpm.d/zz-docker.conf
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_NAME: wp_db
@@ -16,6 +18,21 @@ services:
     depends_on:
       - db
 
+  apache:
+    build:
+      context: ./docker_apache
+      # dockerfile: Dockerfile
+    image: custom-apache
+    container_name: wp-apache
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public_html:/var/www/html
+      - ./docker_apache/apache.conf:/usr/local/apache2/conf/httpd.conf
+      - ./docker_apache/logs:/var/log/docker-logs/
+    depends_on:
+      - wordpress
   db:
     image: mariadb:10.5
     container_name: wp-db-jampack
