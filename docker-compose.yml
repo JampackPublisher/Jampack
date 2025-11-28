@@ -40,5 +40,50 @@ services:
     ports:
       - 8081:8080
 
+  # https://docker-mailserver.github.io/docker-mailserver/latest/config/
+
+  # Create/Update email accounts using commands:
+  # setup email add user@jampack-example.com newpassword
+  # setup email update user@jampack-example.com newpassword
+
+  # Configure DKIM using:
+  # setup config dkim
+  mailserver:
+    image: mailserver/docker-mailserver:15.1.0
+    container_name: wp-mailserver
+    hostname: mail
+    domainname: jampack-example.com
+    ports:
+      - "25:25"     # SMTP
+      - "587:587"   # SMTP submission
+      - "143:143"   # IMAP
+      - "993:993"   # IMAPS
+    volumes:
+      - ./docker_mail/maildata:/var/mail
+      - ./docker_mail/mailstate:/var/mail-state
+      - ./docker_mail/mailconfig:/tmp/docker-mailserver/
+    environment:
+      - ENABLE_OPENDKIM=0
+      - ENABLE_SPAMASSASSIN=1
+      - ENABLE_CLAMAV=1
+      - ENABLE_FAIL2BAN=1
+    restart: always
+    cap_add:
+      - NET_ADMIN
+
+  # https://www.rainloop.net/docs/configuration/
+  # To configure rainloop, use admin panel found at : http://localhost:8082/?admin
+  # Don't forget to add a new A/CNAME record in your DNS zone.
+  # Default login is "admin", password is "12345".
+  rainloop:
+    image: hardware/rainloop:1.13.0
+    container_name: wp-rainloop
+    ports:
+      - "8082:8888"
+    volumes:
+      - ./docker_mail/rainloop_data:/rainloop/data
+    restart: always
+
+# Persistent storage for database      
 volumes:
   db_data:

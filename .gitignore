@@ -42,3 +42,9 @@ build/
 
 # Avoid ignoring the database creation script
 !/jampack_database/createDB.sql
+
+# Ignore mail files
+docker_mail/mailconfig/
+docker_mail/maildata/
+docker_mail/mailstate/
+docker_mail/rainloop_data/
