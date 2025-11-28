@@ -1,13 +1,17 @@
 
 services:
   wordpress:
-    image: wordpress:latest
+    build:
+      context: ./docker_wordpress
+      # dockerfile: Dockerfile
+    image: jampack-wordpress
     container_name: wp-jampack
     restart: always
     ports:
       - "8080:80"
     volumes:
       - ./public_html:/var/www/html
+      - ./docker_wordpress/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_NAME: wp_db
@@ -31,6 +35,7 @@ services:
 
   adminer:
     image: adminer
+    container_name: wp-adminer
     restart: always
     ports:
       - 8081:8080
