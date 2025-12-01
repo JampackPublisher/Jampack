@@ -45,6 +45,9 @@ services:
   # Create/Update email accounts using commands:
   # setup email add user@jampack-example.com newpassword
   # setup email update user@jampack-example.com newpassword
+  # Or from outside the container using:
+  # docker exec -it wp-mailserver setup email add user@jampack-example.com newpassword
+  # docker exec -it wp-mailserver setup email update test@jampack-example.com newpassword
 
   # Configure DKIM using:
   # setup config dkim
@@ -58,10 +61,11 @@ services:
       - "587:587"   # SMTP submission
       - "143:143"   # IMAP
       - "993:993"   # IMAPS
-    volumes:
-      - ./docker_mail/maildata:/var/mail
-      - ./docker_mail/mailstate:/var/mail-state
-      - ./docker_mail/mailconfig:/tmp/docker-mailserver/
+    # It could be useful to persist mail data and configuration (It could generates problems with permissions in windows)
+    # volumes:
+    #   - ./docker_mail/maildata:/var/mail
+    #   - ./docker_mail/mailstate:/var/mail-state
+    #   - ./docker_mail/mailconfig:/tmp/docker-mailserver/
     environment:
       - ENABLE_OPENDKIM=0
       - ENABLE_SPAMASSASSIN=1
