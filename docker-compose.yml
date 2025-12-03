@@ -6,6 +6,7 @@ services:
       # dockerfile: Dockerfile
     image: jampack-wordpress
     container_name: wp-jampack
+    domainname: wordpress.jampack-example.com
     restart: always
     ports:
       - "8080:80"
@@ -51,18 +52,25 @@ services:
 
   # Configure DKIM using:
   # setup config dkim
+
+  # Add the following code to your wp-config.php to use this mailserver as SMTP server (SMTP relay):
+  #   add_action( 'phpmailer_init', function( $phpmailer ) {
+  #      $phpmailer->Helo = 'wordpress.jampack-example.com'; 
+  #   });
+
   mailserver:
     image: mailserver/docker-mailserver:15.1.0
     container_name: wp-mailserver
     hostname: mail
-    domainname: jampack-example.com
+    domainname: jampack-mailserver.com
     ports:
       - "25:25"     # SMTP
       - "587:587"   # SMTP submission
       - "143:143"   # IMAP
       - "993:993"   # IMAPS
     # It could be useful to persist mail data and configuration (It could generates problems with permissions in windows)
-    # volumes:
+    volumes:
+      - ./docker_mail/mailconfig/postfix-accounts.cf:/tmp/docker-mailserver/postfix-accounts.cf
     #   - ./docker_mail/maildata:/var/mail
     #   - ./docker_mail/mailstate:/var/mail-state
     #   - ./docker_mail/mailconfig:/tmp/docker-mailserver/
