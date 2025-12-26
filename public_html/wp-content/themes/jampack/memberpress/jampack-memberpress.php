@@ -49,3 +49,26 @@ function maybe_redirect_member_from_admin_jampack($roles = []) {
 		}
 	}
 }
+
+/**
+ * Force single session on user login by retaining only the latest session token
+ *
+ * @param string $user_login
+ * @param WP_User $user
+ */
+function force_single_session_on_login($user_login, $user)
+{
+	// Check if the user is logged in and valid
+	if (is_a($user, 'WP_User')) {
+		$user_id = $user->ID;
+		// Retrieve the session tokens array from the user meta
+		$sessions = get_user_meta($user_id, 'session_tokens', true);
+
+		if ($sessions && is_array($sessions)) {
+			// Keep only the last session (most recent login)
+			$sessions = array_slice($sessions, -1);
+			// Update the user meta with the new session array
+			update_user_meta($user_id, 'session_tokens', $sessions);
+		}
+	}
+}

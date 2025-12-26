@@ -126,3 +126,8 @@ add_action('mepr-txn-status-confirmed', function($txn) {
 		$txn->store();
 	}
 });
+
+/**
+ * Force single session on user login by retaining only the latest session token
+ */
+add_action('wp_login', 'force_single_session_on_login', 10, 2);
