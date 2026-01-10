@@ -125,6 +125,45 @@ const bricksSyncSliders = (main_id, thumb_id) => {
     }
 }
 
+// Front page slider (hvncdm/wcrxzo) - Simple sync matching old/prod behavior exactly
+// This is the OLD simple sync behavior (just main.sync(thumbnail), no extra listeners)
+// Old code: const subscriptionPlansSlider = bricksSyncSliders('hvncdm', 'wcrxzo'); subscriptionPlansSlider.sync()
+const simpleSyncFrontPage = (main_id, thumb_id) => {
+    let initTimeout
+    
+    const syncSliders = () => {
+        if (!window.bricksData || !window.bricksData.splideInstances) {
+            return false
+        }
+        const main = window.bricksData.splideInstances[main_id]
+        const thumbnail = window.bricksData.splideInstances[thumb_id]
+        if (main && thumbnail) {
+            main.sync(thumbnail)
+            return true
+        }
+        return false
+    }
+    
+    const initSync = () => {
+        if (!syncSliders()) {
+            initTimeout = setTimeout(initSync, 50)
+        } else {
+            clearTimeout(initTimeout)
+        }
+    }
+    
+    const syncOnResize = () => {
+        resizeTimeout = setTimeout(syncSliders, 260)
+    }
+    
+    document.addEventListener('DOMContentLoaded', initSync)
+    window.addEventListener('resize', syncOnResize)
+    
+    return {
+        sync: syncSliders
+    }
+}
+
 
 // Suppress Bricks slider errors for query loop sliders that haven't loaded yet
 const originalError = console.error;
@@ -181,15 +220,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     // Initialize slider syncs - they will retry until Bricks is ready
     // Note: lrnfev is in a query loop, so it may not be available immediately
-    const playerPassSlider = bricksSyncSliders('zhiebz', 'lrnfev')      // Play Pass: Main hero + Featured Titles
-    const playerRewardsSlider = bricksSyncSliders('znfbrp', 'qgzcxq')  // Player Rewards: Main hero + Featured Early Access Titles
-    const multipassSlider = bricksSyncSliders('uhsjsd', 'wxyovo')      // Multipass: Main hero + Featured Early Access Titles
-    const archiveHeroSlider = bricksSyncSliders('wfoabz', 'oeieah')    // Archive Hero (has custom mouseover handler)
-    const subscriptionPlansSlider = bricksSyncSliders('hvncdm', 'wcrxzo') // Subscription Plans
-    const myGamesSlider = bricksSyncSliders('qrvcyr', 'ucsibe')        // My Games
+    bricksSyncSliders('zhiebz', 'lrnfev')      // Play Pass: Main hero + Featured Titles
+    bricksSyncSliders('znfbrp', 'qgzcxq')      // Player Rewards: Main hero + Featured Early Access Titles
+    bricksSyncSliders('uhsjsd', 'wxyovo')      // Multipass: Main hero + Featured Early Access Titles
+    bricksSyncSliders('wfoabz', 'oeieah')      // Archive Hero (has custom mouseover handler)
+    
+    // Front page slider (hvncdm/wcrxzo) - Simple sync
+    const subscriptionPlansSlider = simpleSyncFrontPage('hvncdm', 'wcrxzo')
+    subscriptionPlansSlider.sync()
+    
+    bricksSyncSliders('qrvcyr', 'ucsibe')      // My Games
     
     // Generic function to set up active thumbnail click-to-navigate for any slider pair
-    const setupThumbnailClickToNavigate = (thumbId, thumbElementId, mainId, sliderName) => {
+    const setupThumbnailClickToNavigate = (thumbElementId, mainId) => {
         const setupHandler = () => {
             if (!window.bricksData?.splideInstances) {
                 setTimeout(setupHandler, 200)
@@ -308,13 +351,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Set up click-to-navigate for all thumbnail sliders
-    setupThumbnailClickToNavigate('lrnfev', 'brxe-lrnfev', 'zhiebz', 'Play Pass Featured Titles')
-    setupThumbnailClickToNavigate('qgzcxq', 'brxe-qgzcxq', 'znfbrp', 'Player Rewards Featured Early Access')
-    setupThumbnailClickToNavigate('wxyovo', 'brxe-wxyovo', 'uhsjsd', 'Multipass Featured Early Access')
+    setupThumbnailClickToNavigate('brxe-lrnfev', 'zhiebz')
+    setupThumbnailClickToNavigate('brxe-qgzcxq', 'znfbrp')
+    setupThumbnailClickToNavigate('brxe-wxyovo', 'uhsjsd')
     
     // Unified polling function - consolidates setupSliderPolling and setupSliderPollingFrequent
     // This ensures autoplay works even if the basic sync() method doesn't catch it
-    const setupSliderPolling = (mainId, thumbId, sliderName, interval = 100) => {
+    const setupSliderPolling = (mainId, thumbId, interval = 100) => {
         const setupPolling = () => {
             if (!window.bricksData?.splideInstances) {
                 setTimeout(setupPolling, 200)
@@ -396,14 +439,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // Set up frequent polling (50ms) for sliders with autoplay
-    setupSliderPolling('zhiebz', 'lrnfev', 'Play Pass (Featured Titles)', 50)
-    setupSliderPolling('znfbrp', 'qgzcxq', 'Player Rewards (Featured Early Access Titles)', 50)
-    setupSliderPolling('uhsjsd', 'wxyovo', 'Multipass (Featured Early Access Titles)', 50)
+    setupSliderPolling('zhiebz', 'lrnfev', 50)
+    setupSliderPolling('znfbrp', 'qgzcxq', 50)
+    setupSliderPolling('uhsjsd', 'wxyovo', 50)
     
     // Set up standard polling (100ms) for other sliders
-    setupSliderPolling('wfoabz', 'oeieah', 'Archive Hero', 100)
-    setupSliderPolling('hvncdm', 'wcrxzo', 'Subscription Plans', 100)
-    setupSliderPolling('qrvcyr', 'ucsibe', 'My Games', 100)
+    setupSliderPolling('wfoabz', 'oeieah', 100)
+    // NOTE: Front page slider (hvncdm/wcrxzo) - NO custom code, handled by Bricks natively
+    setupSliderPolling('qrvcyr', 'ucsibe', 100)
 
     // Featured Titles slider click handler - sync with main hero slider (same as keyboard)
     // Use event delegation on the slider container for reliability
@@ -533,20 +576,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const archiveHeroSliderThumbs = document.getElementById('brxe-oeieah-track')?.getElementsByTagName('a')
         const archiveHeroMainSlider = window.bricksData?.splideInstances['wfoabz']
+        const archiveHeroThumbTrack = document.getElementById('brxe-oeieah-track')
         
-        if (archiveHeroSliderThumbs && archiveHeroSliderThumbs.length > 0 && archiveHeroMainSlider) {
+        if (archiveHeroSliderThumbs && archiveHeroSliderThumbs.length > 0 && archiveHeroMainSlider && archiveHeroThumbTrack) {
         for (let i = 0; i < archiveHeroSliderThumbs.length; i++) {
             archiveHeroSliderThumbs[i].addEventListener('mouseover', function(e) {
-                if (e.target.closest('.splide__slide') && e.target.closest('.splide__slide').classList.contains('is-active')) {
+                const clickedSlide = e.target.closest('.splide__slide')
+                if (clickedSlide && clickedSlide.classList.contains('is-active')) {
                     return;
                 }
-                let actives = document.querySelectorAll('.splide__slide.is-active')
+                // Only remove is-active from archive hero slider thumbnails, not all sliders
+                const actives = archiveHeroThumbTrack.querySelectorAll('.splide__slide.is-active')
                 if (actives.length > 0) {
                     for (let active of actives) {
                         active.classList.remove('is-active')
                     }
                 }
-                e.target.closest('.splide__slide').classList.add('is-active')
+                if (clickedSlide) {
+                    clickedSlide.classList.add('is-active')
+                }
                     archiveHeroMainSlider.go(i)
                 })
             }
