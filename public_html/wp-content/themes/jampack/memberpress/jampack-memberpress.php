@@ -1,7 +1,7 @@
 <?php
 
 if (!defined('ABSPATH')) {
-    die('You are not allowed to call this page directly.');
+	die('You are not allowed to call this page directly.');
 }
 
 define('JMP_MEPR_PATH', get_stylesheet_directory() . '/memberpress');
@@ -62,13 +62,104 @@ function force_single_session_on_login($user_login, $user)
 	if (is_a($user, 'WP_User')) {
 		$user_id = $user->ID;
 		// Retrieve the session tokens array from the user meta
-		$sessions = get_user_meta($user_id, 'session_tokens', true);
-
-		if ($sessions && is_array($sessions)) {
-			// Keep only the last session (most recent login)
-			$sessions = array_slice($sessions, -1);
-			// Update the user meta with the new session array
-			update_user_meta($user_id, 'session_tokens', $sessions);
+		$manager  = WP_Session_Tokens::get_instance( $user_id );
+		$sessions = $manager->get_all();
+		if ($sessions && is_array($sessions) && count($sessions) > 1) {
+			// Flag to show message
+			update_user_meta($user_id, 'force_single_session_message_new_login', true);
 		}
+	}
+}
+
+function add_toastify()
+{
+	wp_enqueue_style(
+		'toastify-css',
+		'https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css'
+	);
+
+	wp_enqueue_script(
+		'toastify-js',
+		'https://cdn.jsdelivr.net/npm/toastify-js',
+		array(),
+		null,
+		true
+	);
+}
+
+
+function force_single_session_message_new_login()
+{
+	$user_id = get_current_user_id();
+	if (get_user_meta($user_id, 'force_single_session_message_new_login', true)) {
+		// TODO: localize the message and create a toas manager
+		$js = "
+		Toastify({
+			text: 'You are now logged in. All other active sessions for your account will be closed.',
+			duration: 8000,
+			gravity: 'bottom',
+			position: 'right',
+			close: true,
+			style: {
+				background: '#fe6a48',
+			},
+		}).showToast();
+	";
+		wp_add_inline_script('toastify-js', $js);
+		delete_user_meta($user_id, 'force_single_session_message_new_login');
+	}
+}
+
+function kick_session()
+{
+	$user_id = get_current_user_id();
+	$manager = WP_Session_Tokens::get_instance($user_id);
+	$sessions = $manager->get_all();
+	if (count($sessions) <= 1) {
+		return;
+	}
+
+	$last_session = null;
+    $last_login = 0;
+
+	foreach ($sessions as $id => $data) {
+		if ($data['login'] > $last_login) {
+			$last_login = $data['login'];
+			$last_session = $data;
+		}
+	}
+
+	$current_session_token = wp_get_session_token();
+	$current_session = $manager->get($current_session_token);
+
+	// == instead of === becasue we don't care about the order of the values
+	if ($last_session != $current_session) {
+        $sessions = array_slice($sessions, -1);
+        update_user_meta($user_id, 'session_tokens', $sessions);
+		$home_url = esc_url( home_url('?kicked_session_message=1') );
+		// TODO: Find a better way to redirect
+        echo '<script>window.location.href="' . $home_url . '"</script>';
+		exit;
+	}
+}
+
+
+function show_kicked_session_message()
+{
+	if (isset($_GET['kicked_session_message']) && $_GET['kicked_session_message'] == '1') {
+		// TODO: localize the message and create a toas manager
+		$js = "
+        Toastify({
+            text: 'You have been logged out because your account was used on another device.',
+            duration: 8000,
+			gravity: 'bottom',
+			position: 'right',
+			close: true,
+			style: {
+				background: '#fe6a48',
+			},
+        }).showToast();
+    	";
+		wp_add_inline_script('toastify-js', $js);
 	}
 }

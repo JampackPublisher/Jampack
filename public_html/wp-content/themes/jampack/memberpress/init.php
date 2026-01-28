@@ -131,3 +131,13 @@ add_action('mepr-txn-status-confirmed', function($txn) {
  * Force single session on user login by retaining only the latest session token
  */
 add_action('wp_login', 'force_single_session_on_login', 10, 2);
+
+
+add_action('wp_enqueue_scripts', 'add_toastify');
+
+
+add_action('wp_footer', 'force_single_session_message_new_login');
+
+add_action('wp_enqueue_scripts', 'kick_session');
+
+add_action('wp_footer', 'show_kicked_session_message');
