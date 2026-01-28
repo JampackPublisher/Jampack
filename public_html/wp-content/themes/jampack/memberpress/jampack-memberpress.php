@@ -71,6 +71,9 @@ function force_single_session_on_login($user_login, $user)
 	}
 }
 
+/**
+ * Enqueue Toastify for notifications
+ */
 function add_toastify()
 {
 	wp_enqueue_style(
@@ -87,7 +90,9 @@ function add_toastify()
 	);
 }
 
-
+/**
+ * Show message if user was logged out due to single session enforcement
+ */
 function force_single_session_message_new_login()
 {
 	$user_id = get_current_user_id();
@@ -110,6 +115,9 @@ function force_single_session_message_new_login()
 	}
 }
 
+/**
+ * Kick other sessions after a new session is created
+ */
 function kick_session()
 {
 	$user_id = get_current_user_id();
@@ -143,7 +151,9 @@ function kick_session()
 	}
 }
 
-
+/**
+ * Show message if user was kicked from other sessions
+ */
 function show_kicked_session_message()
 {
 	if (isset($_GET['kicked_session_message']) && $_GET['kicked_session_message'] == '1') {

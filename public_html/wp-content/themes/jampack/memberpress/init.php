@@ -132,12 +132,22 @@ add_action('mepr-txn-status-confirmed', function($txn) {
  */
 add_action('wp_login', 'force_single_session_on_login', 10, 2);
 
-
+/**
+ * Enqueue Toastify for notifications
+ */
 add_action('wp_enqueue_scripts', 'add_toastify');
 
-
+/**
+ * Show message if user was logged out due to single session enforcement
+ */
 add_action('wp_footer', 'force_single_session_message_new_login');
 
+/**
+ * Kick other sessions after a new session is created
+ */
 add_action('wp_enqueue_scripts', 'kick_session');
 
+/**
+ * Show message if user was kicked from other sessions
+ */
 add_action('wp_footer', 'show_kicked_session_message');
