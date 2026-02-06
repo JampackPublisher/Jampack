@@ -145,7 +145,7 @@ add_action('wp_footer', 'force_single_session_message_new_login');
 /**
  * Kick other sessions after a new session is created
  */
-add_action('wp_enqueue_scripts', 'kick_session');
+add_action('template_redirect', 'kick_session');
 
 /**
  * Show message if user was kicked from other sessions

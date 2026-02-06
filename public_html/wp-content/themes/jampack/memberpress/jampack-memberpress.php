@@ -141,13 +141,10 @@ function kick_session()
 	$current_session = $manager->get($current_session_token);
 
 	// == instead of === becasue we don't care about the order of the values
-	if ($last_session != $current_session) {
-        $sessions = array_slice($sessions, -1);
-        update_user_meta($user_id, 'session_tokens', $sessions);
-		$home_url = esc_url( home_url('?kicked_session_message=1') );
-		// TODO: Find a better way to redirect
-        echo '<script>window.location.href="' . $home_url . '"</script>';
-		exit;
+	if ( $last_session != $current_session ) {
+		setcookie('kicked_session_message', '1', time() + 60, COOKIEPATH, COOKIE_DOMAIN);
+		wp_logout();
+        exit;
 	}
 }
 
@@ -156,7 +153,9 @@ function kick_session()
  */
 function show_kicked_session_message()
 {
-	if (isset($_GET['kicked_session_message']) && $_GET['kicked_session_message'] == '1') {
+	if (isset($_COOKIE['kicked_session_message'])) {
+		// Remove cookie
+		setcookie('kicked_session_message', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN);
 		// TODO: localize the message and create a toas manager
 		$js = "
         Toastify({
