@@ -3,6 +3,8 @@ if (!defined('ABSPATH')) {
     die('You are not allowed to call this page directly.');
 }
 
+// TODO: Refactor this file for player-rewards redirection
+
 /**
  * Play Pass Subscription Redirections
  * 
@@ -53,7 +55,7 @@ function jampack_is_playpass_product($product) {
  * @param array $args Arguments containing membership and transaction details
  * @return string Modified URL for Play Pass subscribers
  */
-function jampack_playpass_thankyou_redirect($url, $args = []) {
+function jampack_playpass_playerrewards_thankyou_redirect($url, $args = []) {
     // Check if we have membership information
     if (!isset($args['membership_id']) || empty($args['membership_id'])) {
         return $url;
@@ -61,7 +63,8 @@ function jampack_playpass_thankyou_redirect($url, $args = []) {
 
     // Check if this is a Play Pass product
     if (jampack_is_playpass_product((int) $args['membership_id'])) {
-        return home_url('/play-pass/');
+        // return home_url('/play-pass/');
+        return home_url('/player-rewards/');
     }
 
     return $url;
@@ -72,7 +75,7 @@ function jampack_playpass_thankyou_redirect($url, $args = []) {
  * This ensures any "back to home" or home page visits go to Play Pass
  * ONLY if the user has a valid, active subscription
  */
-function jampack_home_to_playpass_redirect() {
+function jampack_home_to_playpass_playerrewards_redirect() {
     // Only redirect if user is on the home page
     if (is_home() || is_front_page()) {
         //TODO: This logic is used to skip admins during redirection to play pass page,I don't see a reason to skip admins, but i'm leaving here for now in case it is needed.
@@ -82,7 +85,8 @@ function jampack_home_to_playpass_redirect() {
 
         // Check if user has active subscription
         if (jampack_user_has_active_subscription()) {
-            wp_redirect(home_url('/play-pass/'));
+            //wp_redirect(home_url('/play-pass/'));
+            wp_redirect(home_url('/player-rewards/'));
             exit;
         }
     }
@@ -124,7 +128,7 @@ function jampack_user_has_active_subscription() {
 
     return $has_playpass_subscription;
 }
-add_action('template_redirect', 'jampack_home_to_playpass_redirect', 1);
+add_action('template_redirect', 'jampack_home_to_playpass_playerrewards_redirect', 1);
 
 /**
  * Add subscription status data to body tag for JavaScript access
@@ -136,7 +140,7 @@ function jampack_add_subscription_data_to_body() {
 }
 add_action('wp_footer', 'jampack_add_subscription_data_to_body');
 
-add_filter('mepr-thankyou-page-url', 'jampack_playpass_thankyou_redirect', 10, 2);
+add_filter('mepr-thankyou-page-url', 'jampack_playpass_playerrewards_thankyou_redirect', 10, 2);
 
 /**
  * Debug logging for Play Pass redirections

@@ -7,7 +7,7 @@ if (!defined('ABSPATH')) {
 function redirection_after_mepr_login($url, $user)
 {
     if(!in_array('administrator', (array) $user->roles)) {
-        return home_url('/play-pass/');
+        return home_url('/player-rewards/');
     }
 
     return $url;
