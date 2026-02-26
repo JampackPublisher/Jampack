@@ -17,6 +17,45 @@
     border: none !important;
 }
 
+/* Mobile fullscreen fallback (iOS Safari doesn't support Fullscreen API for non-video elements) */
+.jampack-fullscreen-active {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    z-index: 9999 !important;
+    background: #000 !important;
+}
+
+.jampack-fullscreen-active iframe,
+.jampack-fullscreen-active canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.jampack-fullscreen-exit-btn {
+    position: fixed;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0));
+    right: calc(20px + env(safe-area-inset-right, 0));
+    z-index: 10000;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #6b4c9a 0%, #c94b8b 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.jampack-fullscreen-exit-btn:hover {
+    opacity: 0.95;
+}
+
 .game-screenshot {
     margin: 0
 }
