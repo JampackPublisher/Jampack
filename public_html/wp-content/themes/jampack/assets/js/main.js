@@ -788,9 +788,11 @@ window.jampackFullscreen = {
         const exitBtn = document.createElement('button');
         exitBtn.type = 'button';
         exitBtn.id = exitBtnId;
-        exitBtn.className = 'jampack-fullscreen-exit-btn';
-        exitBtn.setAttribute('aria-label', 'Exit fullscreen');
-        exitBtn.innerHTML = 'Exit Fullscreen';
+        // This is the mobile/iOS CSS fullscreen exit button (separate from the main Bricks fullscreen button)
+        exitBtn.className = 'jampack-mobile-fullscreen-exit-btn';
+        exitBtn.setAttribute('aria-label', 'Exit mobile fullscreen');
+        // Mobile fullscreen exit icon (two overlapping squares)
+        exitBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';
         exitBtn.addEventListener('click', () => this.exit());
 
         document.body.appendChild(exitBtn);

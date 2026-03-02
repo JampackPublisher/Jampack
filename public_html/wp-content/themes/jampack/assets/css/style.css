@@ -36,24 +36,38 @@
     height: 100% !important;
 }
 
-.jampack-fullscreen-exit-btn {
+/* Mobile-only CSS fullscreen exit button (separate from the main Bricks fullscreen button) */
+.jampack-mobile-fullscreen-exit-btn {
     position: fixed;
     bottom: calc(20px + env(safe-area-inset-bottom, 0));
     right: calc(20px + env(safe-area-inset-right, 0));
     z-index: 10000;
-    padding: 12px 20px;
-    background: linear-gradient(135deg, #6b4c9a 0%, #c94b8b 100%);
+    padding: 6px;
+    width: 30px;
+    height: 30px;
+    /* Use the site’s orange theme color (see manifest/background_color/theme_color #FF6A4B) */
+    background: linear-gradient(135deg, #ff6a4b 0%, #ff8a4b 100%);
     color: #fff;
     border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
+    border-radius: 6px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.jampack-fullscreen-exit-btn:hover {
+.jampack-mobile-fullscreen-exit-btn:hover {
     opacity: 0.95;
+    transform: scale(1.05);
+}
+
+.jampack-mobile-fullscreen-exit-btn svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    fill: none;
 }
 
 .game-screenshot {
