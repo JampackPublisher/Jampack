@@ -17,6 +17,59 @@
     border: none !important;
 }
 
+/* Mobile fullscreen fallback (iOS Safari doesn't support Fullscreen API for non-video elements) */
+.jampack-fullscreen-active {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    z-index: 9999 !important;
+    background: #000 !important;
+}
+
+.jampack-fullscreen-active iframe,
+.jampack-fullscreen-active canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Mobile-only CSS fullscreen exit button (separate from the main Bricks fullscreen button) */
+.jampack-mobile-fullscreen-exit-btn {
+    position: fixed;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0));
+    right: calc(20px + env(safe-area-inset-right, 0));
+    z-index: 10000;
+    padding: 6px;
+    width: 30px;
+    height: 30px;
+    /* Use the site’s orange theme color (see manifest/background_color/theme_color #FF6A4B) */
+    background: linear-gradient(135deg, #ff6a4b 0%, #ff8a4b 100%);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 3px 9px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.jampack-mobile-fullscreen-exit-btn:hover {
+    opacity: 0.95;
+    transform: scale(1.05);
+}
+
+.jampack-mobile-fullscreen-exit-btn svg {
+    width: 15px;
+    height: 15px;
+    stroke: currentColor;
+    fill: none;
+}
+
 .game-screenshot {
     margin: 0
 }

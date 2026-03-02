@@ -671,8 +671,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 window.jampackFullscreen = {
 
+    /** @type {Element|null} Element currently in CSS fullscreen mode (mobile fallback) */
+    _cssFullscreenElement: null,
+
     /**
      * Launches fullscreen mode.
+     * Uses native Fullscreen API when supported; falls back to CSS-based fullscreen on iOS/mobile.
      * @param {string} selector - Optional CSS selector. If empty, auto-detects game elements
      * @returns {boolean} True if fullscreen was successfully launched, false otherwise
      * @example
@@ -690,6 +694,20 @@ window.jampackFullscreen = {
         }
         
         return this.enterFullscreen(element);
+    },
+
+    /**
+     * Checks if the native Fullscreen API is supported for non-video elements. (iOS related issue)).
+     * @returns {boolean}
+     */
+    supportsFullscreen: function() {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIOS) return false;
+        return !!(document.fullscreenEnabled ||
+            document.webkitFullscreenEnabled ||
+            document.mozFullScreenEnabled ||
+            document.msFullscreenEnabled);
     },
     
     /**
@@ -725,33 +743,92 @@ window.jampackFullscreen = {
     },
     
     /**
-     * Enters fullscreen mode for the specified element using cross-browser API
+     * Enters fullscreen mode for the specified element.
+     * Uses native API when supported; falls back to CSS fullscreen on iOS/mobile.
      * @param {Element} element - DOM element to make fullscreen
-     * @returns {boolean} True if fullscreen request was successful, false if not supported
+     * @returns {boolean} True if fullscreen was entered (native or CSS fallback)
      * @private
      */
     enterFullscreen: function(element) {
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if (element.webkitRequestFullscreen) {
-            element.webkitRequestFullscreen();
-        } else if (element.mozRequestFullScreen) {
-            element.mozRequestFullScreen();
-        } else if (element.msRequestFullscreen) {
-            element.msRequestFullscreen();
-        } else {
-            return false;
+        if (this.supportsFullscreen()) {
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.webkitRequestFullscreen) {
+                element.webkitRequestFullscreen();
+            } else if (element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if (element.msRequestFullscreen) {
+                element.msRequestFullscreen();
+            } else {
+                this.enterCSSFullscreen(element);
+                return true;
+            }
+            return true;
         }
+        // iOS Safari and some mobile browsers: Fullscreen API only works for <video>
+        // Use CSS-based fullscreen fallback for games (iframe/canvas/div)
+        this.enterCSSFullscreen(element);
         return true;
+    },
+
+    /**
+     * CSS-based fullscreen fallback for mobile (iOS Safari doesn't support Fullscreen API for non-video elements).
+     * @param {Element} element - DOM element to make fullscreen
+     * @private
+     */
+    enterCSSFullscreen: function(element) {
+        if (this._cssFullscreenElement) {
+            this.exitCSSFullscreen();
+        }
+        this._cssFullscreenElement = element;
+        element.classList.add('jampack-fullscreen-active');
+        document.body.style.overflow = 'hidden';
+
+        const exitBtnId = 'jampack-fullscreen-exit-' + Date.now();
+        const exitBtn = document.createElement('button');
+        exitBtn.type = 'button';
+        exitBtn.id = exitBtnId;
+        // This is the mobile/iOS CSS fullscreen exit button (separate from the main Bricks fullscreen button)
+        exitBtn.className = 'jampack-mobile-fullscreen-exit-btn';
+        exitBtn.setAttribute('aria-label', 'Exit mobile fullscreen');
+        // Mobile fullscreen exit icon (two overlapping squares)
+        exitBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>';
+        exitBtn.addEventListener('click', () => this.exit());
+
+        document.body.appendChild(exitBtn);
+        element.dataset.jampackExitBtnId = exitBtnId;
+    },
+
+    /**
+     * Exits CSS-based fullscreen mode.
+     * @private
+     */
+    exitCSSFullscreen: function() {
+        const element = this._cssFullscreenElement;
+        if (element) {
+            element.classList.remove('jampack-fullscreen-active');
+            const exitBtnId = element.dataset.jampackExitBtnId;
+            if (exitBtnId) {
+                const btn = document.getElementById(exitBtnId);
+                if (btn) btn.remove();
+                delete element.dataset.jampackExitBtnId;
+            }
+            this._cssFullscreenElement = null;
+        }
+        document.body.style.overflow = '';
     },
     
     /**
-     * Exits fullscreen mode using cross-browser API
+     * Exits fullscreen mode (native API or CSS fallback).
      * @returns {void}
      * @example
      * jampackFullscreen.exit();
      */
     exit: function() {
+        if (this._cssFullscreenElement) {
+            this.exitCSSFullscreen();
+            return;
+        }
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.webkitExitFullscreen) {
@@ -764,7 +841,7 @@ window.jampackFullscreen = {
     },
     
     /**
-     * Checks if currently in fullscreen mode
+     * Checks if currently in fullscreen mode (native or CSS fallback).
      * @returns {boolean} True if any element is currently in fullscreen, false otherwise
      * @example
      * if (jampackFullscreen.isActive()) {
@@ -772,9 +849,10 @@ window.jampackFullscreen = {
      * }
      */
     isActive: function() {
-        return !!(document.fullscreenElement || 
-                 document.webkitFullscreenElement || 
-                 document.mozFullScreenElement || 
-                 document.msFullscreenElement);
+        return !!(this._cssFullscreenElement ||
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.mozFullScreenElement ||
+            document.msFullscreenElement);
     }
 };
