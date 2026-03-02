@@ -26,6 +26,34 @@ function register_jampack_bricks_elements() {
 
 add_action( 'init', 'register_jampack_bricks_elements', 11 );
 
+// Ensure games post type and taxonomies are registered early
+add_action( 'init', function() {
+	// Register games_tags taxonomy if not already registered
+	if ( ! taxonomy_exists( 'games_tags' ) ) {
+		register_taxonomy( 'games_tags', 'games', [
+			'public'            => true,
+			'show_ui'           => true,
+			'show_in_menu'      => true,
+			'hierarchical'      => false,
+			'show_admin_column' => true,
+			'query_var'         => true,
+			'rewrite'           => [ 'slug' => 'games_tags' ],
+		] );
+	}
+	
+	if ( ! taxonomy_exists( 'genre' ) ) {
+		register_taxonomy( 'genre', 'games', [
+			'public'            => true,
+			'show_ui'           => true,
+			'show_in_menu'      => true,
+			'hierarchical'      => true,
+			'show_admin_column' => true,
+			'query_var'         => true,
+			'rewrite'           => [ 'slug' => 'genre' ],
+		] );
+	}
+}, 5 );
+
 // TODO: Pass all the stuff related to games to /includes/elements/games.php file
 
 function prefix_disable_gutenberg( $current_status, $post_type ) {
@@ -189,6 +217,117 @@ function early_access_query_filter( $query_vars ) {
 }
 add_filter( 'bricks/posts/query_vars', 'early_access_query_filter', 10, 1 );
 
+/**
+ * Hide admin-only posts from non-admin users globally across ALL queries
+ * Used for games in testing phase
+ * This affects:
+ * - All Bricks query loops (Posts, Terms, Users, etc.)
+ * - Standard WordPress queries (archives, search, etc.)
+ * - Widget queries
+ * - Any other WP_Query instances
+ * 
+ * @param WP_Query $query The WordPress query object
+ */
+function hide_admin_only_posts_globally( $query ) {
+	// Only run on frontend, not admin panel
+	if ( is_admin() ) {
+		return;
+	}
+
+	// Admins see everything
+	if ( current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	// Only modify queries that are querying posts (not users, terms, etc.)
+	$post_types = $query->get( 'post_type' );
+	
+	// Handle 'any' post type (queries all public post types, including games)
+	$is_any_post_type = false;
+	if ( $post_types === 'any' || ( is_array( $post_types ) && in_array( 'any', $post_types ) ) ) {
+		$is_any_post_type = true;
+		// For 'any', we need to exclude from both taxonomies to cover all post types
+		$post_types = [ 'games', 'post' ]; // Represent that it could be any post type
+	} elseif ( empty( $post_types ) ) {
+		// Default post type is 'post'
+		$post_types = [ 'post' ];
+	} elseif ( ! is_array( $post_types ) ) {
+		$post_types = [ $post_types ];
+	}
+
+	// Skip if querying non-post types (like 'attachment', 'nav_menu_item', etc.)
+	$skip_types = [ 'attachment', 'nav_menu_item', 'revision' ];
+	if ( ! empty( array_intersect( $post_types, $skip_types ) ) ) {
+		return;
+	}
+
+	// Get existing tax_query or initialize
+	$tax_query = $query->get( 'tax_query' );
+	if ( ! is_array( $tax_query ) ) {
+		$tax_query = [];
+	}
+
+	// Determine which taxonomy to use based on post type
+	// Games use 'games_tags', other post types use 'post_tag'
+	$taxonomies_to_check = [];
+	$should_exclude_games = $is_any_post_type || in_array( 'games', $post_types );
+	$should_exclude_others = $is_any_post_type || ! empty( array_diff( $post_types, [ 'games' ] ) );
+	
+	if ( $should_exclude_games ) {
+		$taxonomies_to_check[] = 'games_tags';
+	}
+	if ( $should_exclude_others ) {
+		$taxonomies_to_check[] = 'post_tag';
+	}
+
+	// Check if we already have an admin-only exclusion (avoid duplicates)
+	$has_admin_exclusion = false;
+	foreach ( $tax_query as $tax_condition ) {
+		if ( 
+			isset( $tax_condition['taxonomy'] ) && 
+			in_array( $tax_condition['taxonomy'], $taxonomies_to_check ) &&
+			isset( $tax_condition['terms'] ) && 
+			in_array( 'admin-only', (array) $tax_condition['terms'] ) &&
+			isset( $tax_condition['operator'] ) &&
+			$tax_condition['operator'] === 'NOT IN'
+		) {
+			$has_admin_exclusion = true;
+			break;
+		}
+	}
+
+	// Add condition to exclude posts tagged "admin-only"
+	// Use 'games_tags' for games, 'post_tag' for other post types
+	if ( ! $has_admin_exclusion ) {
+		// If querying games (or 'any' which includes games), use games_tags
+		if ( $should_exclude_games ) {
+			$tax_query[] = [
+				'taxonomy' => 'games_tags',
+				'field'    => 'slug',
+				'terms'    => [ 'admin-only' ],
+				'operator' => 'NOT IN',
+			];
+		}
+		
+		// If querying other post types (or 'any' which includes all), also exclude from post_tag
+		if ( $should_exclude_others ) {
+			$tax_query[] = [
+				'taxonomy' => 'post_tag',
+				'field'    => 'slug',
+				'terms'    => [ 'admin-only' ],
+				'operator' => 'NOT IN',
+			];
+		}
+
+		// Set relation if multiple tax queries exist
+		if ( count( $tax_query ) > 1 && ! isset( $tax_query['relation'] ) ) {
+			$tax_query['relation'] = 'AND';
+		}
+
+		$query->set( 'tax_query', $tax_query );
+	}
+}
+add_action( 'pre_get_posts', 'hide_admin_only_posts_globally', 20, 1 );
 
 function add_games_manifest() {
 	$post_id = get_the_ID();
