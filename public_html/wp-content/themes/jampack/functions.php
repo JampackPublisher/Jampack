@@ -112,19 +112,28 @@ function current_query_index() {
 }
 
 // TODO: Move this function to a more appropriate file
-function get_current_user_subscription_ids() {
+/**
+ * @param int|null $user_id Optional user ID (e.g. during login before globals match).
+ */
+function get_current_user_subscription_ids( $user_id = null ) {
 	$subscription_ids = false;
-	if ($user = wp_get_current_user()) {
-		$member  = new MeprUser( $user->ID );
-		$subscription_ids = $member->active_product_subscriptions() ?: false;
-		$jampack_account = MeprCtrlFactory::fetch('JampackAccount');
-		if($jampack_account->is_children_hospital_user($user)) {
-			$subscription_ids = array_map(fn($membership) => $membership->ID, get_posts([
-				'post_type'      => 'memberpressproduct',
-				'post_status'    => 'publish',
-				'numberposts'    => -1
-			])); 
-		}
+	if ( $user_id !== null ) {
+		$user = get_userdata( (int) $user_id );
+	} else {
+		$user = wp_get_current_user();
+	}
+	if ( ! $user || ! $user->ID ) {
+		return false;
+	}
+	$member  = new MeprUser( $user->ID );
+	$subscription_ids = $member->active_product_subscriptions() ?: false;
+	$jampack_account = MeprCtrlFactory::fetch('JampackAccount');
+	if ( $jampack_account->is_children_hospital_user( $user ) ) {
+		$subscription_ids = array_map( fn( $membership ) => $membership->ID, get_posts( [
+			'post_type'   => 'memberpressproduct',
+			'post_status' => 'publish',
+			'numberposts' => -1,
+		] ) );
 	}
 	return $subscription_ids;
 }

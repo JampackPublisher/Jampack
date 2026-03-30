@@ -656,7 +656,10 @@ document.addEventListener('DOMContentLoaded', function() {
         backElm.innerHTML = iconSvg;
         // Check if user has active subscription via PHP-generated data
         const hasActiveSubscription = document.body.dataset.hasActiveSubscription === 'true';
-        backElm.href = hasActiveSubscription ? window.location.origin + '/play-pass/' : window.location.origin;
+        const subscriptionLanding = document.body.dataset.subscriptionLanding;
+        backElm.href = hasActiveSubscription && subscriptionLanding
+            ? subscriptionLanding
+            : window.location.origin;
         backElm.style.marginRight = '15px';
         backElm.style.color = '#fff';
         const siteBranding = document.querySelector('.site-branding');

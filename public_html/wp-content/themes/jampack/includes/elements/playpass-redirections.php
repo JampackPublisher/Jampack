@@ -13,6 +13,71 @@ if (!defined('ABSPATH')) {
  */
 
 /**
+ * MemberPress product ID => WordPress page ID for post-checkout / home / login landing.
+ * Order matters: first match wins when a user has multiple tiers.
+ * Kept in sync with filter_menu_by_membership() in functions.php.
+ *
+ * @return array<int, int>
+ */
+function jampack_subscription_tier_landing_map() {
+    return [
+        1271 => 1285,
+        1270 => 1248,
+    ];
+}
+
+/**
+ * Landing URL for a specific membership product (e.g. thank-you redirect).
+ *
+ * @param int $product_id MemberPress product post ID.
+ * @return string|null Permalink or null if not a mapped tier.
+ */
+function jampack_landing_url_for_membership_product( $product_id ) {
+    $map = jampack_subscription_tier_landing_map();
+    $product_id = (int) $product_id;
+    if ( isset( $map[ $product_id ] ) ) {
+        $link = get_permalink( $map[ $product_id ] );
+        return is_string( $link ) ? $link : null;
+    }
+    return null;
+}
+
+/**
+ * Default landing for Play Pass products without a tier row in jampack_subscription_tier_landing_map().
+ */
+function jampack_playpass_default_landing_url() {
+    return home_url( '/player-rewards/' );
+}
+
+/**
+ * Resolved landing URL for a user’s active subscriptions (login, home redirect, body data).
+ *
+ * @param int|null $user_id Optional user ID for login redirect before current user is set.
+ * @return string Empty string if user should use default app behavior (no Play Pass).
+ */
+function jampack_get_user_subscription_landing_url( $user_id = null ) {
+    $uid = $user_id !== null ? (int) $user_id : get_current_user_id();
+    if ( ! $uid ) {
+        return '';
+    }
+    $ids = get_current_user_subscription_ids( $uid );
+    if ( empty( $ids ) ) {
+        return '';
+    }
+    $ids = array_map( 'intval', (array) $ids );
+    foreach ( jampack_subscription_tier_landing_map() as $product_id => $page_id ) {
+        if ( in_array( (int) $product_id, $ids, true ) ) {
+            $link = get_permalink( (int) $page_id );
+            return is_string( $link ) ? $link : jampack_playpass_default_landing_url();
+        }
+    }
+    if ( jampack_user_has_active_subscription( $uid ) ) {
+        return jampack_playpass_default_landing_url();
+    }
+    return '';
+}
+
+/**
  * Get Play Pass product IDs
  * 
  * @return array Array of Play Pass product IDs
@@ -61,13 +126,17 @@ function jampack_playpass_playerrewards_thankyou_redirect($url, $args = []) {
         return $url;
     }
 
-    // Check if this is a Play Pass product
-    if (jampack_is_playpass_product((int) $args['membership_id'])) {
-        // return home_url('/play-pass/');
-        return home_url('/player-rewards/');
+    $mid = (int) $args['membership_id'];
+    if ( ! jampack_is_playpass_product( $mid ) ) {
+        return $url;
     }
 
-    return $url;
+    $tier_url = jampack_landing_url_for_membership_product( $mid );
+    if ( $tier_url ) {
+        return $tier_url;
+    }
+
+    return jampack_playpass_default_landing_url();
 }
 
 /**
@@ -84,9 +153,9 @@ function jampack_home_to_playpass_playerrewards_redirect() {
         // }
 
         // Check if user has active subscription
-        if (jampack_user_has_active_subscription()) {
-            //wp_redirect(home_url('/play-pass/'));
-            wp_redirect(home_url('/player-rewards/'));
+        if ( jampack_user_has_active_subscription() ) {
+            $dest = jampack_get_user_subscription_landing_url();
+            wp_redirect( $dest ?: jampack_playpass_default_landing_url() );
             exit;
         }
     }
@@ -96,16 +165,16 @@ function jampack_home_to_playpass_playerrewards_redirect() {
  * Check if current user has an active subscription to any Play Pass product
  * Uses the existing subscription checking logic from functions.php
  * 
+ * @param int|null $user_id Optional user ID.
  * @return bool True if user has active subscription, false otherwise
  */
-function jampack_user_has_active_subscription() {
-    // Must be logged in
-    if (!is_user_logged_in()) {
+function jampack_user_has_active_subscription( $user_id = null ) {
+    $uid = $user_id !== null ? (int) $user_id : get_current_user_id();
+    if ( ! $uid ) {
         return false;
     }
 
-    // Get active subscription IDs using existing function
-    $active_subscription_ids = get_current_user_subscription_ids();
+    $active_subscription_ids = get_current_user_subscription_ids( $uid );
 
     // If no active subscriptions, return false
     if (empty($active_subscription_ids)) {
@@ -135,8 +204,14 @@ add_action('template_redirect', 'jampack_home_to_playpass_playerrewards_redirect
  * This allows the back button to conditionally redirect based on subscription status
  */
 function jampack_add_subscription_data_to_body() {
-    $has_active_subscription = jampack_user_has_active_subscription() ? 'true' : 'false';
-    echo '<script>document.body.dataset.hasActiveSubscription = "' . $has_active_subscription . '";</script>';
+    $has_active = jampack_user_has_active_subscription();
+    $has_active_subscription = $has_active ? 'true' : 'false';
+    $landing = '';
+    if ( $has_active ) {
+        $landing = jampack_get_user_subscription_landing_url() ?: jampack_playpass_default_landing_url();
+    }
+    $landing_json = wp_json_encode( $landing );
+    echo '<script>document.body.dataset.hasActiveSubscription = "' . esc_js( $has_active_subscription ) . '";document.body.dataset.subscriptionLanding = ' . $landing_json . ';</script>';
 }
 add_action('wp_footer', 'jampack_add_subscription_data_to_body');
 
