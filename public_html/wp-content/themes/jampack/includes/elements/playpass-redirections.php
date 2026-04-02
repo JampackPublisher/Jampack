@@ -23,6 +23,7 @@ function jampack_subscription_tier_landing_map() {
     return [
         1271 => 1285,
         1270 => 1248,
+        1269 => 81,
     ];
 }
 
@@ -46,7 +47,7 @@ function jampack_landing_url_for_membership_product( $product_id ) {
  * Default landing for Play Pass products without a tier row in jampack_subscription_tier_landing_map().
  */
 function jampack_playpass_default_landing_url() {
-    return home_url( '/player-rewards/' );
+    return home_url( '/play-pass/' );
 }
 
 /**
