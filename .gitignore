@@ -9,8 +9,9 @@ public_html/wp-salt.php
 public_html/wp-content/debug.log
 
 # Ignore all plugins and themes except your custom ones
+# For Example, !public_html/wp-content/plugins/your-custom-plugin/
 public_html/wp-content/plugins/*
-!public_html/wp-content/plugins/your-custom-plugin/
+!public_html/wp-content/plugins/faq-chatbot/
 
 public_html/wp-content/themes/*
 !public_html/wp-content/themes/jampack/
@@ -31,6 +32,8 @@ public_html/wp-config-sample.php
 
 # OS/IDE files
 .DS_Store
+# macOS AppleDouble: stores resource fork / extended attributes on non-native volumes (e.g. USB, SMB, exFAT)
+._*
 Thumbs.db
 .vscode/
 .idea/
