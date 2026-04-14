@@ -37,6 +37,7 @@ public_html/wp-config-sample.php
 Thumbs.db
 .vscode/
 .idea/
+.cursor/
 
 # Node/npm build artifacts (if used)
 node_modules/
