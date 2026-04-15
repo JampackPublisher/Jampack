@@ -59,7 +59,7 @@
 		 */
 		function toggleChatWindow(show) {
 			if (show) {
-				window.style.display = 'block';
+				window.style.display = 'flex';
 				button.style.display = 'none';
 				input.focus();
 			} else {
