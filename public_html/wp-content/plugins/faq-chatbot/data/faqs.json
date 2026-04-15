@@ -14,10 +14,10 @@
   {
     "id": "faq_subscription_helps",
     "question": "How does my subscription help?",
-    "answer": "Great question—your subscription goes straight toward Games for Love’s mission: supporting kids in hospitals and underserved communities around the world through games and related programs. So when you play with us, you’re helping that work continue.",
+    "answer": "Your subscription goes straight toward Games for Love’s mission: supporting kids in hospitals and underserved communities around the world through games and related programs. So when you play with us, you’re helping that work continue.",
     "phrases": [
       "how does my subscription help",
-      "where does my money go",
+      "how does my money help",
       "what does subscription support",
       "does subscription help charity",
       "subscription helps kids"
@@ -69,25 +69,21 @@
     "question": "Do I need special hardware or software?",
     "answer": "Most of Jampack runs in your web browser, so there’s usually nothing special to install. A few titles may work best on certain devices or note extra requirements—when that’s the case, you’ll see it called out on the game’s page so you know before you play.",
     "phrases": [
-      "special hardware or software",
       "what do i need to play",
-      "browser based games",
-      "device requirements",
       "can i play on my phone",
-      "smart tv games"
+      "can i play from my computer"
     ]
   },
   {
     "id": "faq_kids_safety",
     "question": "Is Jampack suitable for kids?",
-    "answer": "Yes—we focus on family-friendly, age-appropriate experiences and curate content with younger players in mind. Every family is different, though, so we still recommend checking each game’s rating or description to make sure it’s a good fit for your child’s age and what you’re comfortable with.",
+    "answer": "Jampack focuses on family-friendly, age-appropriate experiences and curate content with younger players in mind. Every family is different, though, so we still recommend checking each game’s rating or description to make sure it’s a good fit for your child’s age and what you’re comfortable with.",
     "phrases": [
       "suitable for kids",
       "is jampack safe for kids",
-      "kid friendly games",
+      "kid friendly",
       "age appropriate content",
-      "family friendly games",
-      "can my child play"
+      "family friendly"
     ]
   },
   {
@@ -113,6 +109,17 @@
       "games for love nonprofit",
       "charity behind jampack",
       "games for love mission"
+    ]
+  },
+  {
+    "id": "faq_pricing_plans",
+    "question": "What plans do you offer?",
+    "answer": "We offer monthly and annual plans. Check our pricing page for the latest options and discounts. https://jampack.org/",
+    "phrases": [
+      "what plans do you offer",
+      "subscription options",
+      "what is the price",
+      "does it cost"
     ]
   }
 ]

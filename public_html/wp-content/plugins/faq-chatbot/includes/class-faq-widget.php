@@ -83,13 +83,18 @@ class FAQ_Widget {
 		if ( ! $this->should_display_widget() ) {
 			return;
 		}
+
+		$css_path    = FAQ_CHATBOT_PLUGIN_DIR . 'assets/css/chatbot.css';
+		$js_path     = FAQ_CHATBOT_PLUGIN_DIR . 'assets/js/chatbot.js';
+		$css_version = file_exists( $css_path ) ? (string) filemtime( $css_path ) : FAQ_CHATBOT_VERSION;
+		$js_version  = file_exists( $js_path ) ? (string) filemtime( $js_path ) : FAQ_CHATBOT_VERSION;
 		
 		// Enqueue CSS
 		wp_enqueue_style(
 			'faq-chatbot-css',
 			FAQ_CHATBOT_PLUGIN_URL . 'assets/css/chatbot.css',
 			array(),
-			FAQ_CHATBOT_VERSION
+			$css_version
 		);
 		
 		// Enqueue JS
@@ -97,7 +102,7 @@ class FAQ_Widget {
 			'faq-chatbot-js',
 			FAQ_CHATBOT_PLUGIN_URL . 'assets/js/chatbot.js',
 			array(),
-			FAQ_CHATBOT_VERSION,
+			$js_version,
 			true
 		);
 		
