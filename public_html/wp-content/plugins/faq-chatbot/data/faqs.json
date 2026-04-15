@@ -1,5 +1,29 @@
 [
   {
+    "id": "faq_what_is_jampack",
+    "question": "What is Jampack?",
+    "answer": "Jampack is an online gaming platform built by the charity Games for Love—one of the first charities to launch a platform like this. You’ll find a growing library of fun games you can play right in your browser on phones, tablets, computers, and many smart TVs, so jumping in is usually as simple as opening a link.",
+    "phrases": [
+      "what is jampack",
+      "tell me about jampack",
+      "what does jampack do",
+      "jampack gaming platform",
+      "games for love jampack"
+    ]
+  },
+  {
+    "id": "faq_subscription_helps",
+    "question": "How does my subscription help?",
+    "answer": "Great question—your subscription goes straight toward Games for Love’s mission: supporting kids in hospitals and underserved communities around the world through games and related programs. So when you play with us, you’re helping that work continue.",
+    "phrases": [
+      "how does my subscription help",
+      "where does my money go",
+      "what does subscription support",
+      "does subscription help charity",
+      "subscription helps kids"
+    ]
+  },
+  {
     "id": "faq_play_pass_benefits",
     "question": "What do I get with a Play Pass?",
     "answer": "A Play Pass gives you full access to premium game features, exclusive content, and member-only updates.",
@@ -14,18 +38,22 @@
   {
     "id": "faq_cancel_subscription",
     "question": "How do I cancel my subscription?",
-    "answer": "You can cancel from your account billing page. Your access remains active until the end of the current billing cycle.",
+    "answer": "You can cancel anytime—no hassle. Head to your account or billing settings to turn off renewal. You’ll keep full access through the end of the period you’ve already paid for, so you can keep playing until that date.",
     "phrases": [
       "cancel my subscription",
       "cancel subscription",
       "end my membership",
-      "stop my subscription"
+      "stop my subscription",
+      "can i cancel anytime",
+      "cancel anytime",
+      "turn off renewal",
+      "account billing page"
     ]
   },
   {
     "id": "faq_reset_password",
     "question": "How can I reset my password?",
-    "answer": "Use the Forgot Password link on the login page and follow the reset instructions sent to your email.",
+    "answer": "No worries—it happens to everyone. On the login screen, use the Forgot Password link and we’ll email you steps to reset it. If nothing shows up after a few minutes, peek at spam or promotions, then try once more.",
     "phrases": [
       "reset my password",
       "update my password",
@@ -34,6 +62,57 @@
       "forgot my password",
       "password reset email",
       "login page forgot password"
+    ]
+  },
+  {
+    "id": "faq_hardware_software",
+    "question": "Do I need special hardware or software?",
+    "answer": "Most of Jampack runs in your web browser, so there’s usually nothing special to install. A few titles may work best on certain devices or note extra requirements—when that’s the case, you’ll see it called out on the game’s page so you know before you play.",
+    "phrases": [
+      "special hardware or software",
+      "what do i need to play",
+      "browser based games",
+      "device requirements",
+      "can i play on my phone",
+      "smart tv games"
+    ]
+  },
+  {
+    "id": "faq_kids_safety",
+    "question": "Is Jampack suitable for kids?",
+    "answer": "Yes—we focus on family-friendly, age-appropriate experiences and curate content with younger players in mind. Every family is different, though, so we still recommend checking each game’s rating or description to make sure it’s a good fit for your child’s age and what you’re comfortable with.",
+    "phrases": [
+      "suitable for kids",
+      "is jampack safe for kids",
+      "kid friendly games",
+      "age appropriate content",
+      "family friendly games",
+      "can my child play"
+    ]
+  },
+  {
+    "id": "faq_contact_support",
+    "question": "Who do I contact for support?",
+    "answer": "We’re here to help. For billing, access, or technical questions, email us at Info@gamesforlove.org or use the contact form on the Games for Love website—whichever you prefer—and we’ll get back to you as soon as we can.",
+    "phrases": [
+      "who do i contact for support",
+      "contact support",
+      "customer support email",
+      "help with billing",
+      "technical support",
+      "games for love contact"
+    ]
+  },
+  {
+    "id": "faq_what_is_games_for_love",
+    "question": "What is Games for Love?",
+    "answer": "Games for Love is the nonprofit behind Jampack. They use games and technology to brighten the days of children in hospitals and to support underserved communities worldwide. Jampack is one of the ways that mission shows up in a product you can actually play and enjoy.",
+    "phrases": [
+      "what is games for love",
+      "who is games for love",
+      "games for love nonprofit",
+      "charity behind jampack",
+      "games for love mission"
     ]
   }
 ]

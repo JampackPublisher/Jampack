@@ -3,7 +3,7 @@
  * Plugin Name: FAQ Chatbot
  * Plugin URI: https://jampack.org
  * Description: A floating chat widget that uses FAQ content with deterministic key-phrase matching.
- * Version: 1.0.1
+ * Version: 1.0.0
  * Author: Jampack
  * Author URI: https://jampack.org
  * License: GPL v2 or later
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define plugin constants
-define( 'FAQ_CHATBOT_VERSION', '1.0.1' );
+define( 'FAQ_CHATBOT_VERSION', '1.0.0' );
 define( 'FAQ_CHATBOT_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FAQ_CHATBOT_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 

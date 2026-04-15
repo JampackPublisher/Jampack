@@ -3,7 +3,7 @@ Contributors: jampack
 Tags: chatbot, faq, chat widget
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.0.1
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,10 +52,9 @@ FAQ Chatbot displays a floating chat widget on selected pages. The chatbot uses 
 
 == Changelog ==
 
-= 1.0.1 =
-* Matching uses multi-word key phrases in `faqs.json` (legacy `keywords` still read as phrases)
-
 = 1.0.0 =
 * JSON-first deterministic FAQ chatbot implementation
+* Multi-word `phrases` matching in `faqs.json` (legacy `keywords` still read as phrases)
+* Default FAQ content for Jampack (overview, subscription, Play Pass, cancel, password, device, kids, support, Games for Love)
 * Optional Claude fallback adapter (off by default)
 * Admin settings for allowed pages, threshold, fallback toggle, and API key
