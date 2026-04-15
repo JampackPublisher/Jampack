@@ -68,7 +68,7 @@ class FAQ_Repository {
 			return array();
 		}
 
-		$raw = file_get_contents( $file_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$raw = file_get_contents( $file_path );
 		if ( false === $raw || '' === trim( $raw ) ) {
 			return array();
 		}
@@ -108,17 +108,27 @@ class FAQ_Repository {
 			return array();
 		}
 
-		$keywords = array();
-		if ( isset( $entry['keywords'] ) && is_array( $entry['keywords'] ) ) {
-			foreach ( $entry['keywords'] as $keyword ) {
-				$keyword = sanitize_text_field( (string) $keyword );
-				if ( '' !== $keyword ) {
-					$keywords[] = strtolower( $keyword );
+		$phrases = array();
+
+		if ( isset( $entry['phrases'] ) && is_array( $entry['phrases'] ) ) {
+			foreach ( $entry['phrases'] as $phrase ) {
+				$phrase = sanitize_text_field( (string) $phrase );
+				if ( '' !== $phrase ) {
+					$phrases[] = strtolower( $phrase );
 				}
 			}
 		}
 
-		if ( empty( $keywords ) ) {
+		if ( empty( $phrases ) && isset( $entry['keywords'] ) && is_array( $entry['keywords'] ) ) {
+			foreach ( $entry['keywords'] as $keyword ) {
+				$keyword = sanitize_text_field( (string) $keyword );
+				if ( '' !== $keyword ) {
+					$phrases[] = strtolower( $keyword );
+				}
+			}
+		}
+
+		if ( empty( $phrases ) ) {
 			return array();
 		}
 
@@ -126,7 +136,7 @@ class FAQ_Repository {
 			'id'       => $id,
 			'question' => $question,
 			'answer'   => $answer,
-			'keywords' => array_values( array_unique( $keywords ) ),
+			'phrases'  => array_values( array_unique( $phrases ) ),
 		);
 	}
 

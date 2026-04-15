@@ -77,7 +77,7 @@ class FAQ_Matcher {
 			return $this->empty_result();
 		}
 
-		$cache_key = 'faq_match_' . md5( $normalized_query . '|' . (int) $threshold );
+		$cache_key = 'faq_match_' . md5( $normalized_query . '|' . (int) $threshold . '|phrases_v1' );
 		$cached    = wp_cache_get( $cache_key, 'faq_chatbot' );
 		if ( false !== $cached && is_array( $cached ) ) {
 			return $cached;
@@ -107,7 +107,7 @@ class FAQ_Matcher {
 		$best_score = 0;
 
 		foreach ( $faqs as $faq ) {
-			$score = $this->score_faq( $faq, $normalized_query, $tokens );
+			$score = $this->score_faq( $faq, $normalized_query );
 			if ( $score > $best_score ) {
 				$best_score = $score;
 				$best_item  = $faq;
@@ -148,36 +148,32 @@ class FAQ_Matcher {
 	}
 
 	/**
-	 * Score a FAQ entry based on keyword matches.
+	 * Score a FAQ entry using multi-word key phrases only (substring in normalized query).
+	 * Single-token entries are ignored to reduce false positives (e.g. "password" alone).
 	 *
-	 * @param array<string, mixed> $faq FAQ item.
+	 * @param array<string, mixed> $faq FAQ item (expects `phrases` from repository).
 	 * @param string               $normalized_query Normalized user query.
-	 * @param array<int, string>   $tokens Tokenized query terms.
 	 * @return int
 	 */
-	private function score_faq( $faq, $normalized_query, $tokens ) {
-		$score = 0;
+	private function score_faq( $faq, $normalized_query ) {
+		$score   = 0;
+		$phrases = isset( $faq['phrases'] ) && is_array( $faq['phrases'] ) ? $faq['phrases'] : array();
 
-		foreach ( $faq['keywords'] as $keyword ) {
-			$keyword_norm = $this->normalize_input( $keyword );
-			if ( '' === $keyword_norm ) {
+		foreach ( $phrases as $phrase ) {
+			$phrase_norm = $this->normalize_input( $phrase );
+			if ( '' === $phrase_norm ) {
 				continue;
 			}
 
-			if ( false !== strpos( $normalized_query, $keyword_norm ) ) {
-				$score += 3;
+			$phrase_tokens = $this->tokenize( $phrase_norm );
+			$word_count    = count( $phrase_tokens );
+			if ( $word_count < 2 ) {
 				continue;
 			}
 
-			if ( in_array( $keyword_norm, $tokens, true ) ) {
-				$score += 2;
-				continue;
-			}
-
-			$keyword_tokens = $this->tokenize( $keyword_norm );
-			$overlap        = array_intersect( $tokens, $keyword_tokens );
-			if ( ! empty( $overlap ) ) {
-				$score += 1;
+			if ( false !== strpos( $normalized_query, $phrase_norm ) ) {
+				// Stronger weight for longer phrases (more specific intent).
+				$score += ( 10 * $word_count ) + min( strlen( $phrase_norm ), 48 );
 			}
 		}
 

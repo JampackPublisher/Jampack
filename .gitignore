@@ -38,6 +38,7 @@ Thumbs.db
 .vscode/
 .idea/
 .cursor/
+scratch/
 
 # Node/npm build artifacts (if used)
 node_modules/

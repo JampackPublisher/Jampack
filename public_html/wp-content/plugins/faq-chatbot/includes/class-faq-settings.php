@@ -168,7 +168,7 @@ class FAQ_Settings {
 	public function render_section_description() {
 		echo '<p>' . esc_html__( 'Configure the FAQ Chatbot settings below.', 'faq-chatbot' ) . '</p>';
 		echo '<p><code>' . esc_html( FAQ_CHATBOT_PLUGIN_DIR . 'data/faqs.json' ) . '</code> ';
-		echo esc_html__( 'is the primary FAQ source. Each item must include id, question, answer, and keywords[] fields.', 'faq-chatbot' ) . '</p>';
+		echo esc_html__( 'is the primary FAQ source. Each item must include id, question, answer, and phrases[] (multi-word key phrases users might type).', 'faq-chatbot' ) . '</p>';
 	}
 	
 	/**
@@ -220,7 +220,7 @@ class FAQ_Settings {
 			esc_attr( $threshold )
 		);
 		
-		echo '<p class="description">' . esc_html__( 'Minimum number of keyword matches required to return an answer. Set to 0 to return the best match regardless of score.', 'faq-chatbot' ) . '</p>';
+		echo '<p class="description">' . esc_html__( 'Minimum phrase-match score required to return an FAQ answer (higher = stricter). Phrases must be at least two words. Set to 0 to allow the best-scoring FAQ even if low.', 'faq-chatbot' ) . '</p>';
 	}
 	
 	/**

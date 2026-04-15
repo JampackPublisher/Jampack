@@ -3,11 +3,11 @@ Contributors: jampack
 Tags: chatbot, faq, chat widget
 Requires at least: 5.0
 Tested up to: 6.4
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-A floating chat widget that uses FAQ content with deterministic keyword-based matching.
+A floating chat widget that uses FAQ content with deterministic key-phrase matching.
 
 == Description ==
 
@@ -16,7 +16,7 @@ FAQ Chatbot displays a floating chat widget on selected pages. The chatbot uses 
 == Features ==
 
 * JSON FAQ source (`data/faqs.json`)
-* Deterministic matching pipeline (normalize, tokenize, exact match, weighted keyword score)
+* Deterministic matching pipeline (normalize, exact question match, multi-word phrase substring score)
 * Configurable page targeting
 * Floating chat widget UI
 * AJAX-powered responses
@@ -36,7 +36,7 @@ FAQ Chatbot displays a floating chat widget on selected pages. The chatbot uses 
     "id": "faq_unique_id",
     "question": "Question text",
     "answer": "Answer text",
-    "keywords": ["keyword one", "keyword two"]
+    "phrases": ["multi word phrase one", "another user phrase"]
   }
 ]
 ```
@@ -51,6 +51,9 @@ FAQ Chatbot displays a floating chat widget on selected pages. The chatbot uses 
 * Scripts/styles are only enqueued on allowed pages.
 
 == Changelog ==
+
+= 1.0.1 =
+* Matching uses multi-word key phrases in `faqs.json` (legacy `keywords` still read as phrases)
 
 = 1.0.0 =
 * JSON-first deterministic FAQ chatbot implementation
