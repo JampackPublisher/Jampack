@@ -211,7 +211,7 @@ function early_access_query_filter( $query_vars ) {
 			if ( in_array( "games", $post_type ) ) {
 				$user_id = get_current_user_id();
 				$member  = new MeprUser( $user_id );
-				if ( empty( array_intersect( [ 1270, 1271 ], $member->active_product_subscriptions() ) ) ) {
+				if ( empty( array_intersect( [ 1269, 1270, 1271 ], $member->active_product_subscriptions() ) ) ) {
 					$query_vars['date_query'] = array(
 						array(
 							'column' => 'post_date',
@@ -377,15 +377,17 @@ add_action('wp_head', 'add_games_manifest');
 
 function filter_menu_by_membership( $items ) {
 	if (!is_admin() && !current_user_can('administrator')) {
-		$page_to_remove = [1285, 1248];
+		$page_to_remove = [1285, 1248, 81];
 		$menu_to_remove = [];
 		if ( is_user_logged_in() ) {
 			$user_id = get_current_user_id();
 			$member  = new MeprUser( $user_id );
 			if ( in_array( 1271, $member->active_product_subscriptions() ) ) {
-				$page_to_remove = [ 1248 ];
+				$page_to_remove = [ 1248, 81 ];
 			} else if ( in_array( 1270, $member->active_product_subscriptions() ) ) {
-				$page_to_remove = [ 1285 ];
+				$page_to_remove = [ 1285, 81 ];
+			} else if ( in_array( 1269, $member->active_product_subscriptions() ) ) {
+				$page_to_remove = [ 1285, 1248 ];
 			}
 		} else {
 			$page_to_remove[] = 1672;

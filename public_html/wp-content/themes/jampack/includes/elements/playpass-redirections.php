@@ -23,6 +23,7 @@ function jampack_subscription_tier_landing_map() {
     return [
         1271 => 1285,
         1270 => 1248,
+        1269 => 81,
     ];
 }
 
@@ -44,9 +45,21 @@ function jampack_landing_url_for_membership_product( $product_id ) {
 
 /**
  * Default landing for Play Pass products without a tier row in jampack_subscription_tier_landing_map().
+ * Uses the published "play-pass" page when present, otherwise /player-rewards/.
  */
 function jampack_playpass_default_landing_url() {
-    return home_url( '/player-rewards/' );
+    static $cached = null;
+    if ( null !== $cached ) {
+        return $cached;
+    }
+    $page = get_page_by_path( 'play-pass', OBJECT, 'page' );
+    if ( $page instanceof WP_Post ) {
+        $link = get_permalink( $page );
+        if ( is_string( $link ) ) {
+            return $cached = $link;
+        }
+    }
+    return $cached = home_url( '/player-rewards/' );
 }
 
 /**
