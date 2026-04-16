@@ -20,7 +20,7 @@ FAQ Chatbot displays a floating chat widget on selected pages. The chatbot uses 
 * Configurable page targeting
 * Floating chat widget UI
 * AJAX-powered responses
-* Optional Claude server-side fallback (disabled by default)
+* Optional Claude server-side fallback (disabled by default), gated by on-topic / question-shape checks and per-IP rate limits before any API call
 * Nonce validation, sanitization, and scoped asset loading
 
 == Installation ==
@@ -53,8 +53,10 @@ FAQ Chatbot displays a floating chat widget on selected pages. The chatbot uses 
 == Changelog ==
 
 = 1.0.0 =
+* Pre-Claude query guard (Jampack topic allowlist, question shape, cheap abuse heuristics) and per-IP transient rate limits with short backoff
+* Stricter Claude system prompt, non-2xx handling, lower max tokens / temperature 0
 * JSON-first deterministic FAQ chatbot implementation
 * Multi-word `phrases` matching in `faqs.json` (legacy `keywords` still read as phrases)
 * Default FAQ content for Jampack (overview, subscription, Play Pass, cancel, password, device, kids, support, Games for Love)
 * Optional Claude fallback adapter (off by default)
-* Admin settings for allowed pages, threshold, fallback toggle, and API key
+* Admin settings for allowed pages, threshold, fallback toggle, API key, Claude per-IP limits, and optional extra topic phrases

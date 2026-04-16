@@ -60,6 +60,7 @@ class FAQ_Chatbot {
 	private function load_dependencies() {
 		require_once FAQ_CHATBOT_PLUGIN_DIR . 'includes/class-faq-repository.php';
 		require_once FAQ_CHATBOT_PLUGIN_DIR . 'includes/class-faq-matcher.php';
+		require_once FAQ_CHATBOT_PLUGIN_DIR . 'includes/class-faq-query-guard.php';
 		require_once FAQ_CHATBOT_PLUGIN_DIR . 'includes/class-faq-ajax.php';
 		require_once FAQ_CHATBOT_PLUGIN_DIR . 'includes/class-faq-settings.php';
 		require_once FAQ_CHATBOT_PLUGIN_DIR . 'includes/class-faq-widget.php';
@@ -104,6 +105,9 @@ class FAQ_Chatbot {
 			'match_threshold' => 1,
 			'enable_claude_fallback' => 0,
 			'claude_api_key' => '',
+			'claude_max_per_hour' => 5,
+			'claude_max_per_day' => 20,
+			'topic_allowlist_extra' => '',
 			'fallback_message' => 'I\'m sorry, I couldn\'t find a matching answer. Please try rephrasing your question or contact support for assistance.',
 		);
 		

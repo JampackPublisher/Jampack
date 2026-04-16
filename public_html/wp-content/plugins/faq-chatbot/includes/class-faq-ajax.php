@@ -100,7 +100,39 @@ class FAQ_Ajax {
 			return;
 		}
 
-		$adapter      = FAQ_LLM_Adapter::get_instance();
+		$adapter = FAQ_LLM_Adapter::get_instance();
+		if ( ! $adapter->is_enabled() ) {
+			wp_send_json_success( array(
+				'answer'   => wp_kses_post( $fallback_message ),
+				'fallback' => true,
+				'source'   => 'fallback',
+			) );
+			return;
+		}
+
+		$debug_bypass_guards = (bool) apply_filters( 'faq_chatbot_debug_bypass_guards', false, $query, $settings );
+		if ( ! $debug_bypass_guards ) {
+			$gate = FAQ_Query_Guard::validate_query( $query, $settings );
+			if ( empty( $gate['ok'] ) ) {
+				wp_send_json_success( array(
+					'answer'   => wp_kses_post( FAQ_Query_Guard::get_minimal_refusal_message() ),
+					'fallback' => true,
+					'source'   => 'gate',
+				) );
+				return;
+			}
+
+			$ip = FAQ_Query_Guard::get_client_ip();
+			if ( ! FAQ_Query_Guard::try_consume_llm_slot( $ip, $settings ) ) {
+				wp_send_json_success( array(
+					'answer'   => wp_kses_post( FAQ_Query_Guard::get_minimal_refusal_message() ),
+					'fallback' => true,
+					'source'   => 'rate_limit',
+				) );
+				return;
+			}
+		}
+
 		$context_faqs = FAQ_Repository::get_instance()->get_faqs();
 		$llm_response = $adapter->get_llm_response( $query, $context_faqs );
 		if ( ! empty( $llm_response ) ) {
