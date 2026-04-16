@@ -44,10 +44,7 @@
       "cancel subscription",
       "end my membership",
       "stop my subscription",
-      "can i cancel anytime",
-      "cancel anytime",
-      "turn off renewal",
-      "account billing page"
+      "turn off renewal"
     ]
   },
   {
@@ -59,9 +56,7 @@
       "update my password",
       "change my password",
       "forgot password",
-      "forgot my password",
-      "password reset email",
-      "login page forgot password"
+      "forgot my password"
     ]
   },
   {
@@ -118,7 +113,104 @@
       "what plans do you offer",
       "subscription options",
       "what is the price",
-      "does it cost"
+      "does it cost",
+      "monthly or annual plan"
+    ]
+  },
+  {
+    "id": "faq_free_trial",
+    "question": "Do you offer a free trial?",
+    "answer": "For free trial availability and current promotions, please contact info@gamesforlove.org so the support team can share the latest official details.",
+    "phrases": [
+      "do you offer a free trial",
+      "is there a free trial",
+      "can i try before paying",
+      "trial period",
+      "free trial jampack"
+    ]
+  },
+  {
+    "id": "faq_refund_request",
+    "question": "Can I request a refund?",
+    "answer": "For refund requests and eligibility, contact info@gamesforlove.org with your account details and billing information so support can help you directly.",
+    "phrases": [
+      "can i get a refund",
+      "refund request",
+      "how do refunds work",
+      "money back",
+      "billing refund"
+    ]
+  },
+  {
+    "id": "faq_gift_membership",
+    "question": "Can I gift a subscription or membership?",
+    "answer": "For gifting options and availability, contact info@gamesforlove.org and the team can confirm the current process.",
+    "phrases": [
+      "gift a subscription",
+      "gift membership",
+      "buy for a friend",
+      "can i gift jampack",
+      "send membership as gift"
+    ]
+  },
+  {
+    "id": "faq_multiplayer_social",
+    "question": "Do you have multiplayer or social games?",
+    "answer": "Multiplayer and social features are not currently part of the catalog, but they are planned for future updates.",
+    "phrases": [
+      "does jampack have multiplayer",
+      "does jampack support co op play",
+      "can i play jampack with friends",
+      "are there social features on jampack",
+      "does jampack have player chat"
+    ]
+  },
+  {
+    "id": "faq_regional_restrictions",
+    "question": "Are there regional restrictions?",
+    "answer": "There are currently no regional restrictions listed in approved support guidance.",
+    "phrases": [
+      "regional restrictions",
+      "is jampack available in my country",
+      "country availability",
+      "geo restrictions",
+      "can i access jampack internationally"
+    ]
+  },
+  {
+    "id": "faq_membership_perks",
+    "question": "What membership perks are available?",
+    "answer": "Perks vary by tier and can include priority support, exclusive community badge and chatroom access, Player+ spotlight opportunities, access to selected source and soundtrack assets, behind-the-scenes content, interactive developer sessions, and one game design submission per month with potential designer credit.",
+    "phrases": [
+      "membership perks",
+      "member benefits",
+      "what do i get as a member",
+      "tier perks",
+      "player plus benefits"
+    ]
+  },
+  {
+    "id": "faq_compare_tiers",
+    "question": "How can I compare membership tiers?",
+    "answer": "Visit the Jampack homepage and review the membership tier sections to compare the latest benefits and pricing.",
+    "phrases": [
+      "compare tiers",
+      "membership tier differences",
+      "which plan should i choose",
+      "compare membership options",
+      "tier comparison"
+    ]
+  },
+  {
+    "id": "faq_login_help",
+    "question": "I cannot log in. What should I do?",
+    "answer": "First verify your email and password, then try the Forgot Password flow if needed. If you still cannot access your account, contact info@gamesforlove.org for account support.",
+    "phrases": [
+      "cannot log in",
+      "unable to sign in",
+      "login not working",
+      "account access issue",
+      "why cant i log in"
     ]
   }
 ]
