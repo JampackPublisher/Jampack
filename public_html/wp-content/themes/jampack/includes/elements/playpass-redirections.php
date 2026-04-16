@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
     die('You are not allowed to call this page directly.');
 }
 
-// TODO: Refactor this file for player-rewards redirection
+// TODO: Refactor subscription redirect helpers (Play Pass hub: /play-pass/).
 
 /**
  * Play Pass Subscription Redirections
@@ -45,7 +45,7 @@ function jampack_landing_url_for_membership_product( $product_id ) {
 
 /**
  * Default landing for Play Pass products without a tier row in jampack_subscription_tier_landing_map().
- * Uses the published "play-pass" page when present, otherwise /player-rewards/.
+ * Canonical path: https://jampack.org/play-pass/ — uses the published page permalink when found, else /play-pass/.
  */
 function jampack_playpass_default_landing_url() {
     static $cached = null;
@@ -59,7 +59,7 @@ function jampack_playpass_default_landing_url() {
             return $cached = $link;
         }
     }
-    return $cached = home_url( '/player-rewards/' );
+    return $cached = home_url( '/play-pass/' );
 }
 
 /**
