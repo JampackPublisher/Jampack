@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
     die('You are not allowed to call this page directly.');
 }
 
-// TODO: Refactor this file for player-rewards redirection
+// TODO: Refactor subscription redirect helpers if tier list grows further.
 
 /**
  * Play Pass Subscription Redirections
@@ -13,9 +13,22 @@ if (!defined('ABSPATH')) {
  */
 
 /**
+ * Permalink for a WordPress page ID (Player+, Multipass, tier pages, Play Pass hub).
+ *
+ * @param int $page_id Page post ID.
+ * @return string Empty string if permalink is unavailable.
+ */
+function jampack_subscription_landing_permalink_for_page( $page_id ) {
+    $link = get_permalink( (int) $page_id );
+    return is_string( $link ) ? $link : '';
+}
+
+/**
  * MemberPress product ID => WordPress page ID for post-checkout / home / login landing.
  * Order matters: first match wins when a user has multiple tiers.
  * Kept in sync with filter_menu_by_membership() in functions.php.
+ *
+ * Tier pages (examples): 1271 → Player+ hub page, 1270 → Multipass hub page, 1269 → tier page.
  *
  * @return array<int, int>
  */
@@ -23,6 +36,7 @@ function jampack_subscription_tier_landing_map() {
     return [
         1271 => 1285,
         1270 => 1248,
+        1269 => 81,
     ];
 }
 
@@ -36,17 +50,36 @@ function jampack_landing_url_for_membership_product( $product_id ) {
     $map = jampack_subscription_tier_landing_map();
     $product_id = (int) $product_id;
     if ( isset( $map[ $product_id ] ) ) {
-        $link = get_permalink( $map[ $product_id ] );
-        return is_string( $link ) ? $link : null;
+        $link = jampack_subscription_landing_permalink_for_page( $map[ $product_id ] );
+        return $link !== '' ? $link : null;
     }
     return null;
 }
 
 /**
  * Default landing for Play Pass products without a tier row in jampack_subscription_tier_landing_map().
+ * Uses the same page-ID → permalink pattern as tiers when JPCK_PLAYPASS_HUB_PAGE_ID is set;
+ * otherwise resolves the published page with slug {@see get_page_by_path()} `play-pass`, then /play-pass/.
  */
 function jampack_playpass_default_landing_url() {
-    return home_url( '/player-rewards/' );
+    static $cached = null;
+    if ( null !== $cached ) {
+        return $cached;
+    }
+    if ( defined( 'JPCK_PLAYPASS_HUB_PAGE_ID' ) && (int) JPCK_PLAYPASS_HUB_PAGE_ID > 0 ) {
+        $link = jampack_subscription_landing_permalink_for_page( (int) JPCK_PLAYPASS_HUB_PAGE_ID );
+        if ( $link !== '' ) {
+            return $cached = $link;
+        }
+    }
+    $page = get_page_by_path( 'play-pass', OBJECT, 'page' );
+    if ( $page instanceof WP_Post ) {
+        $link = jampack_subscription_landing_permalink_for_page( (int) $page->ID );
+        if ( $link !== '' ) {
+            return $cached = $link;
+        }
+    }
+    return $cached = home_url( '/play-pass/' );
 }
 
 /**
@@ -67,8 +100,8 @@ function jampack_get_user_subscription_landing_url( $user_id = null ) {
     $ids = array_map( 'intval', (array) $ids );
     foreach ( jampack_subscription_tier_landing_map() as $product_id => $page_id ) {
         if ( in_array( (int) $product_id, $ids, true ) ) {
-            $link = get_permalink( (int) $page_id );
-            return is_string( $link ) ? $link : jampack_playpass_default_landing_url();
+            $link = jampack_subscription_landing_permalink_for_page( (int) $page_id );
+            return $link !== '' ? $link : jampack_playpass_default_landing_url();
         }
     }
     if ( jampack_user_has_active_subscription( $uid ) ) {
