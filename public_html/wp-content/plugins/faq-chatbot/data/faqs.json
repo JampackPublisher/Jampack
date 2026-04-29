@@ -1,0 +1,216 @@
+[
+  {
+    "id": "faq_what_is_jampack",
+    "question": "What is Jampack?",
+    "answer": "Jampack is an online gaming platform built by the charity Games for Love—one of the first charities to launch a platform like this. You’ll find a growing library of fun games you can play right in your browser on phones, tablets, computers, and many smart TVs, so jumping in is usually as simple as opening a link.",
+    "phrases": [
+      "what is jampack",
+      "tell me about jampack",
+      "what does jampack do",
+      "jampack gaming platform",
+      "games for love jampack"
+    ]
+  },
+  {
+    "id": "faq_subscription_helps",
+    "question": "How does my subscription help?",
+    "answer": "Your subscription goes straight toward Games for Love’s mission: supporting kids in hospitals and underserved communities around the world through games and related programs. So when you play with us, you’re helping that work continue.",
+    "phrases": [
+      "how does my subscription help",
+      "how does my money help",
+      "what does subscription support",
+      "does subscription help charity",
+      "subscription helps kids"
+    ]
+  },
+  {
+    "id": "faq_play_pass_benefits",
+    "question": "What do I get with a Play Pass?",
+    "answer": "A Play Pass gives you full access to premium game features, exclusive content, and member-only updates.",
+    "phrases": [
+      "what is a play pass",
+      "play pass benefits",
+      "what do i get with a play pass",
+      "premium game features",
+      "member only updates"
+    ]
+  },
+  {
+    "id": "faq_cancel_subscription",
+    "question": "How do I cancel my subscription?",
+    "answer": "You can cancel anytime—no hassle. Head to your account or billing settings to turn off renewal. You’ll keep full access through the end of the period you’ve already paid for, so you can keep playing until that date.",
+    "phrases": [
+      "cancel my subscription",
+      "cancel subscription",
+      "end my membership",
+      "stop my subscription",
+      "turn off renewal"
+    ]
+  },
+  {
+    "id": "faq_reset_password",
+    "question": "How can I reset my password?",
+    "answer": "No worries—it happens to everyone. On the login screen, use the Forgot Password link and we’ll email you steps to reset it. If nothing shows up after a few minutes, peek at spam or promotions, then try once more.",
+    "phrases": [
+      "reset my password",
+      "update my password",
+      "change my password",
+      "forgot password",
+      "forgot my password"
+    ]
+  },
+  {
+    "id": "faq_hardware_software",
+    "question": "Do I need special hardware or software?",
+    "answer": "Most of Jampack runs in your web browser, so there’s usually nothing special to install. A few titles may work best on certain devices or note extra requirements—when that’s the case, you’ll see it called out on the game’s page so you know before you play.",
+    "phrases": [
+      "what do i need to play",
+      "can i play on my phone",
+      "can i play from my computer"
+    ]
+  },
+  {
+    "id": "faq_kids_safety",
+    "question": "Is Jampack suitable for kids?",
+    "answer": "Jampack focuses on family-friendly, age-appropriate experiences and curate content with younger players in mind. Every family is different, though, so we still recommend checking each game’s rating or description to make sure it’s a good fit for your child’s age and what you’re comfortable with.",
+    "phrases": [
+      "suitable for kids",
+      "is jampack safe for kids",
+      "kid friendly",
+      "age appropriate content",
+      "family friendly"
+    ]
+  },
+  {
+    "id": "faq_contact_support",
+    "question": "Who do I contact for support?",
+    "answer": "We’re here to help. For billing, access, or technical questions, email us at Info@gamesforlove.org or use the contact form on the Games for Love website—whichever you prefer—and we’ll get back to you as soon as we can.",
+    "phrases": [
+      "contact for support",
+      "customer support email",
+      "help with billing",
+      "technical support",
+      "games for love contact"
+    ]
+  },
+  {
+    "id": "faq_what_is_games_for_love",
+    "question": "What is Games for Love?",
+    "answer": "Games for Love is the nonprofit behind Jampack. They use games and technology to brighten the days of children in hospitals and to support underserved communities worldwide. Jampack is one of the ways that mission shows up in a product you can actually play and enjoy.",
+    "phrases": [
+      "what is games for love",
+      "who is games for love",
+      "games for love nonprofit",
+      "charity behind jampack",
+      "games for love mission"
+    ]
+  },
+  {
+    "id": "faq_pricing_plans",
+    "question": "What plans do you offer?",
+    "answer": "We offer monthly and annual plans. Check our pricing page for the latest options and discounts. https://jampack.org/",
+    "phrases": [
+      "what plans do you offer",
+      "subscription options",
+      "what is the price",
+      "does it cost",
+      "monthly or annual plan"
+    ]
+  },
+  {
+    "id": "faq_free_trial",
+    "question": "Do you offer a free trial?",
+    "answer": "For free trial availability and current promotions, please contact info@gamesforlove.org so the support team can share the latest official details.",
+    "phrases": [
+      "do you offer a free trial",
+      "is there a free trial",
+      "can i try before paying",
+      "trial period",
+      "free trial jampack"
+    ]
+  },
+  {
+    "id": "faq_refund_request",
+    "question": "Can I request a refund?",
+    "answer": "For refund requests and eligibility, contact info@gamesforlove.org with your account details and billing information so support can help you directly.",
+    "phrases": [
+      "can i get a refund",
+      "refund request",
+      "how do refunds work",
+      "money back",
+      "billing refund"
+    ]
+  },
+  {
+    "id": "faq_gift_membership",
+    "question": "Can I gift a subscription or membership?",
+    "answer": "For gifting options and availability, contact info@gamesforlove.org and the team can confirm the current process.",
+    "phrases": [
+      "gift a subscription",
+      "gift membership",
+      "buy for a friend",
+      "can i gift jampack",
+      "send membership as gift"
+    ]
+  },
+  {
+    "id": "faq_multiplayer_social",
+    "question": "Do you have multiplayer or social games?",
+    "answer": "Multiplayer and social features are not currently part of the catalog, but they are planned for future updates.",
+    "phrases": [
+      "does jampack have multiplayer",
+      "does jampack support co op play",
+      "can i play jampack with friends",
+      "are there social features on jampack",
+      "does jampack have player chat"
+    ]
+  },
+  {
+    "id": "faq_regional_restrictions",
+    "question": "Are there regional restrictions?",
+    "answer": "There are currently no regional restrictions listed in approved support guidance.",
+    "phrases": [
+      "regional restrictions",
+      "is jampack available in my country",
+      "country availability",
+      "geo restrictions",
+      "can i access jampack internationally"
+    ]
+  },
+  {
+    "id": "faq_membership_perks",
+    "question": "What membership perks are available?",
+    "answer": "Perks vary by tier and can include priority support, exclusive community badge and chatroom access, Player+ spotlight opportunities, access to selected source and soundtrack assets, behind-the-scenes content, interactive developer sessions, and one game design submission per month with potential designer credit.",
+    "phrases": [
+      "membership perks",
+      "member benefits",
+      "what do i get as a member",
+      "tier perks",
+      "player plus benefits"
+    ]
+  },
+  {
+    "id": "faq_compare_tiers",
+    "question": "How can I compare membership tiers?",
+    "answer": "Visit the Jampack homepage and review the membership tier sections to compare the latest benefits and pricing.",
+    "phrases": [
+      "compare tiers",
+      "membership tier differences",
+      "which plan should i choose",
+      "compare membership options",
+      "tier comparison"
+    ]
+  },
+  {
+    "id": "faq_login_help",
+    "question": "I cannot log in. What should I do?",
+    "answer": "First verify your email and password, then try the Forgot Password flow if needed. If you still cannot access your account, contact info@gamesforlove.org for account support.",
+    "phrases": [
+      "cannot log in",
+      "unable to sign in",
+      "login not working",
+      "account access issue",
+      "why cant i log in"
+    ]
+  }
+]
